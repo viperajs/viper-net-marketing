@@ -9,6 +9,11 @@ const inter = Inter({
 export const metadata = {
   title: "Viper Net - Professional Digital Solutions",
   description: "Professional digital solutions for your business. Web design, SEO optimization, online stores, and digital marketing.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
