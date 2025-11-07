@@ -11,7 +11,11 @@ export const metadata = {
   description: "Professional digital solutions for your business. Web design, SEO optimization, online stores, and digital marketing.",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
