@@ -4,16 +4,16 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated for matte black concept - premium dark look with minimal shine */
-  --background: #0a0a0a;
+  /* Matte black concept - premium dark look with minimal shine */
+  --background: #000000;
   --foreground: #e5e5e5;
-  --card: #111111;
+  --card: #0a0a0a;
   --card-foreground: #e5e5e5;
-  --popover: #0a0a0a;
+  --popover: #000000;
   --popover-foreground: #e5e5e5;
   --primary: #14b8a6;
   --primary-foreground: #ffffff;
-  --secondary: #151515;
+  --secondary: #0f0f0f;
   --secondary-foreground: #e5e5e5;
   --muted: #9ca3af;
   --muted-foreground: #9ca3af;
@@ -21,8 +21,8 @@
   --accent-foreground: #0a0a0a;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: #1c1c1c;
-  --input: #151515;
+  --border: #1a1a1a;
+  --input: #0f0f0f;
   --ring: #14b8a6;
   --chart-1: #14b8a6;
   --chart-2: oklch(0.6 0.118 184.704);
@@ -30,13 +30,13 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-  --sidebar: #111111;
+  --sidebar: #0a0a0a;
   --sidebar-foreground: #e5e5e5;
   --sidebar-primary: #14b8a6;
   --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #1c1c1c;
+  --sidebar-accent: #1a1a1a;
   --sidebar-accent-foreground: #e5e5e5;
-  --sidebar-border: #1c1c1c;
+  --sidebar-border: #1a1a1a;
   --sidebar-ring: #14b8a6;
 }
 
@@ -128,10 +128,248 @@
 /* Added matte shadow utility and smooth animations */
 @layer utilities {
   .shadow-matte {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  }
+
+  .bg-matte-black {
+    background-color: #000000;
   }
 
   .transition-smooth {
     transition: all 0.3s ease-in-out;
   }
+
+  .bg-gradient-animated {
+    background: linear-gradient(
+      135deg,
+      #000000 0%,
+      #0a0a0a 20%,
+      #1a1a1a 40%,
+      #0a0a0a 60%,
+      #0f0f0f 80%,
+      #000000 100%
+    );
+    background-size: 400% 400%;
+    animation: gradient-shift 20s ease infinite;
+    will-change: background-position;
+  }
+
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(rgba(20, 184, 166, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 184, 166, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+  }
+
+  /* Optimize for mobile performance */
+  @media (max-width: 768px) {
+    .bg-gradient-animated {
+      background-size: 200% 200%;
+      animation-duration: 25s;
+    }
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+    }
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-move {
+  0% {
+    transform: translate(0%, 0%) scale(1);
+  }
+  33% {
+    transform: translate(30%, 30%) scale(1.1);
+  }
+  66% {
+    transform: translate(-20%, 20%) scale(0.9);
+  }
+  100% {
+    transform: translate(0%, 0%) scale(1);
+  }
+}
+
+@keyframes grid-move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+/* Scroll reveal animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger animation delays */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+.stagger-6 {
+  animation-delay: 0.6s;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
 }
