@@ -118,7 +118,7 @@ export default function Header({ isScrolled }) {
   const cardNavItems = [
     {
       label: "Home",
-      bgColor: "#0D0716",
+      bgColor: "#281838",
       textColor: "#fff",
       links: [
         { label: "Go to Home", href: "#home", ariaLabel: "Go to Home section" },
@@ -126,7 +126,7 @@ export default function Header({ isScrolled }) {
     },
     {
       label: "Services",
-      bgColor: "#170D27",
+      bgColor: "#281838",
       textColor: "#fff",
       links: [
         { label: "View Services", href: "#services", ariaLabel: "View our services" },
@@ -134,7 +134,7 @@ export default function Header({ isScrolled }) {
     },
     {
       label: "Contact",
-      bgColor: "#271E37",
+      bgColor: "#281838",
       textColor: "#fff",
       links: [
         { label: "Get in Touch", href: "#contact", ariaLabel: "Contact us" },
@@ -235,4 +235,5 @@ export default function Header({ isScrolled }) {
     </>
   )
 }
+
 

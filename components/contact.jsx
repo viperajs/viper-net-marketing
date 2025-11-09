@@ -8,10 +8,9 @@ export default function Contact() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef(null)
   
-  // X/Twitter account info - променете тук с вашия акаунт
   const twitterAccount = "Vipera"
   const twitterUrl = "https://x.com/e_balakchiev"
-  const profileImage = "/profile-image.jpg" // Добавете вашата снимка в public/ папката
+  const profileImage = "/profile-image.jpg" 
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -54,7 +53,6 @@ export default function Contact() {
               height={96}
               className="object-cover rounded-full"
               onError={(e) => {
-                // Fallback ако снимката не съществува - показва градиент с V
                 e.target.style.display = 'none'
                 const fallback = e.target.nextElementSibling
                 if (fallback) {
@@ -82,4 +80,5 @@ export default function Contact() {
     </section>
   )
 }
+
 

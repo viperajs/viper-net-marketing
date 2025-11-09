@@ -58,7 +58,6 @@ const CardNav = ({
   useEffect(() => {
     if (navRef.current) {
       if (isExpanded) {
-        // Small delay to ensure content is rendered
         setTimeout(() => {
           const height = calculateHeight()
           if (navRef.current) {
@@ -140,7 +139,6 @@ const CardNav = ({
                     onClick={(e) => {
                       e.preventDefault()
                       closeMenu()
-                      // Smooth scroll to section
                       const targetId = lnk.href.replace("#", "")
                       const targetElement = document.getElementById(targetId)
                       if (targetElement) {
@@ -164,4 +162,5 @@ const CardNav = ({
 }
 
 export default CardNav
+
 

@@ -64,7 +64,7 @@ export default function Footer() {
                 @e_balakchiev (ViperNet)
               </a>
               <a
-                href="https://www.linkedin.com/company/viper-net"
+                href="https://www.linkedin.com/in/ediz-balakchiev-87026b363/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-gray-400 hover:text-[#14B8A6] transition-colors text-sm"
@@ -124,4 +124,5 @@ export default function Footer() {
     </footer>
   )
 }
+
 
