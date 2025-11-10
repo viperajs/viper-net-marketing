@@ -155,21 +155,21 @@ export default function Header({ isScrolled }) {
 
       <header
         className={`hidden md:block fixed w-full top-0 z-50 transition-smooth ${
-          isScrolled ? "bg-black/98 backdrop-blur-[0.5em] border-b border-[#1a1a1a]" : "bg-transparent"
+          isScrolled ? "bg-black/60 backdrop-blur-md border-b border-white/20" : "bg-transparent"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-gradient-to-br from-[#14B8A6] to-[#10B8A6] rounded-lg flex items-center justify-center transition-smooth group-hover:scale-110">
-                <span className="text-white font-bold text-lg">V</span>
+              <div className="w-8 h-8 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg flex items-center justify-center transition-smooth group-hover:scale-110 group-hover:bg-white/30">
+                <span className="text-white font-bold text-lg drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">V</span>
               </div>
-              <span className="text-xl font-bold text-white hidden sm:inline">Viper Net</span>
+              <span className="text-xl font-bold text-white hidden sm:inline drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Viper Net</span>
             </Link>
 
           {/* Desktop Pill Navigation */}
-          <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-[#0a0a0a]/80 backdrop-blur-sm border border-[#1a1a1a]">
+          <nav className="hidden md:flex items-center gap-2 p-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
             {navLinks.map((link) => {
               const IconComponent = link.icon
               const sectionId = link.href.replace("#", "")
@@ -205,15 +205,15 @@ export default function Header({ isScrolled }) {
                     group relative flex items-center gap-2 px-4 py-2 rounded-full
                     transition-all duration-300 text-sm font-medium
                     ${isActive 
-                      ? "bg-[#14B8A6]/20 text-[#14B8A6] shadow-lg shadow-[#14B8A6]/10" 
-                      : "text-[#E5E5E5] hover:text-[#14B8A6] hover:bg-[#14B8A6]/10"
+                      ? "bg-white/20 text-white shadow-lg shadow-white/10" 
+                      : "text-white/80 hover:text-white hover:bg-white/10"
                     }
                   `}
                 >
                   {IconComponent && (
                     <IconComponent 
                       className={`w-4 h-4 transition-all duration-300 ${
-                        isActive ? "text-[#14B8A6]" : "text-[#9CA3AF] group-hover:text-[#14B8A6]"
+                        isActive ? "text-white" : "text-white/70 group-hover:text-white"
                       }`} 
                     />
                   )}
@@ -221,7 +221,7 @@ export default function Header({ isScrolled }) {
                   
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#14B8A6]/20 to-[#14B8A6]/10 animate-pulse-slow" />
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-white/20 to-white/10 animate-pulse-slow" />
                   )}
                 </Link>
               )

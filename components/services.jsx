@@ -62,8 +62,8 @@ export default function Services() {
     <section id="services" className="py-20 px-4 sm:px-6 lg:px-8 relative" ref={sectionRef}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 scroll-reveal">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Our Services</h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">Our Services</h2>
+          <p className="text-white/90 text-lg max-w-2xl mx-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
             We provide comprehensive digital solutions for your business growth
           </p>
         </div>
@@ -75,16 +75,16 @@ export default function Services() {
             return (
               <div
                 key={index}
-                className={`group p-6 rounded-xl bg-gradient-to-br from-[#0a0a0a] to-black border border-[#1a1a1a] hover:border-[#14B8A6]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#14B8A6]/10 hover:scale-105 cursor-pointer ${
+                className={`group p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-xl hover:shadow-white/10 hover:scale-105 cursor-pointer ${
                   isVisible ? "animate-scale-in" : "opacity-0"
                 }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="mb-4 inline-block p-3 rounded-lg bg-[#14B8A6]/10 group-hover:bg-[#14B8A6]/20 transition-all group-hover:rotate-6">
-                  <Icon className="w-6 h-6 text-[#14B8A6] group-hover:scale-110 transition-transform duration-300" />
+                <div className="mb-4 inline-block p-3 rounded-lg bg-white/10 group-hover:bg-white/20 transition-all group-hover:rotate-6">
+                  <Icon className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#14B8A6] transition-colors duration-300">{service.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed group-hover:text-gray-300 transition-colors duration-300">{service.description}</p>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-white transition-colors duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{service.title}</h3>
+                <p className="text-white/80 text-sm leading-relaxed group-hover:text-white/90 transition-colors duration-300">{service.description}</p>
               </div>
             )
           })}
@@ -93,5 +93,6 @@ export default function Services() {
     </section>
   )
 }
+
 
 

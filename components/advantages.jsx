@@ -64,11 +64,11 @@ export default function Advantages() {
                 }`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#14B8A6]/20 to-[#10B8A6]/20 rounded-lg opacity-0 group-hover:opacity-100 blur-xl transition duration-500 group-hover:scale-105" />
-                <div className="relative p-8 rounded-lg bg-gradient-to-br from-[#0a0a0a] to-black border border-[#1a1a1a] group-hover:border-[#14B8A6]/40 transition-all duration-300 group-hover:scale-105">
-                  <Icon className="w-12 h-12 text-[#14B8A6] mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#14B8A6] transition-colors duration-300">{advantage.title}</h3>
-                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300">{advantage.description}</p>
+                <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/20 rounded-lg opacity-0 group-hover:opacity-100 blur-xl transition duration-500 group-hover:scale-105" />
+                <div className="relative p-8 rounded-lg bg-white/5 backdrop-blur-sm border border-white/20 group-hover:border-white/40 transition-all duration-300 group-hover:scale-105">
+                  <Icon className="w-12 h-12 text-white mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]" />
+                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-white transition-colors duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{advantage.title}</h3>
+                  <p className="text-white/80 leading-relaxed group-hover:text-white/90 transition-colors duration-300">{advantage.description}</p>
                 </div>
               </div>
             )
@@ -78,5 +78,6 @@ export default function Advantages() {
     </section>
   )
 }
+
 
 
