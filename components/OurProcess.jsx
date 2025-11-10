@@ -9,19 +9,19 @@ export default function OurProcess() {
   const steps = [
     {
       number: 1,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      text: "We start by understanding your business, target audience, and goals. Then we create an online strategy that truly works for you."
     },
     {
       number: 2,
-      text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+      text: "We build a visual concept and user interface that combine style and functionality — fully aligned with your brand identity."
     },
     {
       number: 3,
-      text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      text: "We bring the design to life using modern technologies. Our team integrates content management systems, online stores, payment gateways, and more."
     },
     {
       number: 4,
-      text: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      text: "Before launch, we test the site for speed, security, and mobile compatibility. After going live, we provide ongoing support and optimization."
     }
   ]
 
@@ -93,11 +93,9 @@ export default function OurProcess() {
           <div className="flex flex-col justify-center">
             <div className="space-y-6">
               <p className="text-white/90 text-lg leading-relaxed drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-              </p>
-              
-              <p className="text-white/90 text-lg leading-relaxed drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              We design and develop websites that work — fast, secure, and easy to use.
+              Our approach blends strategy, design, and technology to help you stand out online.
+              No templates. No guesswork. Just results that move your business forward.
               </p>
             </div>
           </div>

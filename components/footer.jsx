@@ -1,6 +1,6 @@
 "use client"
 
-import { Facebook, Instagram, Twitter, Linkedin, Github } from "lucide-react"
+import {  Twitter, Linkedin, Github } from "lucide-react"
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/20 bg-black/40 backdrop-blur-sm py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -18,36 +18,6 @@ export default function Footer() {
               <span className="text-xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Viper Net</span>
             </div>
             <p className="text-white/80 text-sm leading-relaxed">Professional digital solutions for your business</p>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="text-white font-semibold mb-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Services</h4>
-            <ul className="space-y-2">
-              {["Web Design", "SEO Optimization", "Online Stores", "Digital Marketing", "Support & Hosting"].map(
-                (item) => (
-                  <li key={item}>
-                    <a href="#" className="text-white/70 hover:text-white transition-all duration-300 text-sm inline-block hover:translate-x-1">
-                      {item}
-                    </a>
-                  </li>
-                ),
-              )}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h4 className="text-white font-semibold mb-4 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Company</h4>
-            <ul className="space-y-2">
-              {["Home", "Projects", "About Us", "Blog"].map((item) => (
-                <li key={item}>
-                    <a href="#" className="text-white/70 hover:text-white transition-all duration-300 text-sm inline-block hover:translate-x-1">
-                      {item}
-                    </a>
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* Contact */}
@@ -61,7 +31,7 @@ export default function Footer() {
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm"
               >
                 <Twitter size={16} />
-                @e_balakchiev (ViperNet)
+                @Viper
               </a>
               <a
                 href="https://www.linkedin.com/in/ediz-balakchiev-87026b363/"
@@ -70,7 +40,7 @@ export default function Footer() {
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm"
               >
                 <Linkedin size={16} />
-               Ediz Balakchiev
+                Ediz Balakchiev
               </a>
               <a
                 href="https://github.com/balakchiev12"
