@@ -23,7 +23,7 @@ export default function Hero() {
         </h1>
 
         <p className="text-lg sm:text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-          Transform your business with professional web solutions, SEO optimization, and digital marketing
+          Transform your business with professional web solutions, SEO optimization and online stores
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up stagger-3">

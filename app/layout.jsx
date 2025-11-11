@@ -9,7 +9,7 @@ const poppins = Poppins({
 
 export const metadata = {
   title: "Viper Net - Professional Digital Solutions",
-  description: "Professional digital solutions for your business. Web design, SEO optimization, online stores, and digital marketing.",
+  description: "Professional digital solutions for your business. Web design, SEO optimization and online stores.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
