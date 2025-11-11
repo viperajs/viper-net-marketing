@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Home, Briefcase, Mail } from "lucide-react"
+import { Home, Briefcase, Mail, Globe } from "lucide-react"
 import CardNav from "./CardNav"
 
 export default function Header({ isScrolled }) {
   const [activeSection, setActiveSection] = useState("home")
 
   useEffect(() => {
-    const sections = ["home", "services", "contact"]
+    const sections = ["home", "services", "websites", "contact"]
     
     const updateActiveSection = () => {
       const scrollPosition = window.scrollY
@@ -112,6 +112,7 @@ export default function Header({ isScrolled }) {
   const navLinks = [
     { label: "Home", href: "#home", icon: Home },
     { label: "Services", href: "#services", icon: Briefcase },
+    { label: "Websites", href: "#websites", icon: Globe },
     { label: "Contact", href: "#contact", icon: Mail },
   ]
 
@@ -130,6 +131,14 @@ export default function Header({ isScrolled }) {
       textColor: "#fff",
       links: [
         { label: "View Services", href: "#services", ariaLabel: "View our services" },
+      ],
+    },
+    {
+      label: "Websites",
+      bgColor: "#281838",
+      textColor: "#fff",
+      links: [
+        { label: "View Websites", href: "#websites", ariaLabel: "View our websites" },
       ],
     },
     {

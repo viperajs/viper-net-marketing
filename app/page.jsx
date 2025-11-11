@@ -7,6 +7,7 @@ import Services from "@/components/services"
 import Advantages from "@/components/advantages"
 import OurProcess from "@/components/OurProcess"
 import Projects from "@/components/projects"
+import Websites from "@/components/websites"
 import Contact from "@/components/contact"
 import Footer from "@/components/footer"
 import LightRays from "@/components/LightRays"
@@ -46,6 +47,7 @@ import LightRays from "@/components/LightRays"
         <Advantages />
         <OurProcess />
         <Projects />
+        <Websites />
         <Contact />
         <Footer />
       </main>
