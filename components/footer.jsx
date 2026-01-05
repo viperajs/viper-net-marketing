@@ -43,13 +43,13 @@ export default function Footer() {
                 Ediz Balakchiev
               </a>
               <a
-                href="https://github.com/balakchiev12"
+                href="https://github.com/viperajs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors text-sm"
               >
                 <Github size={16} />
-                balakchiev12
+                viperajs
               </a>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function Footer() {
                 <Linkedin size={18} />
               </a>
               <a 
-                href="https://github.com/balakchiev12" 
+                href="https://github.com/viperajs" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="p-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all duration-300 hover:scale-110 hover:rotate-6 active:scale-95" 
