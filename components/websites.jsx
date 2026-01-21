@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { ExternalLink, Star } from "lucide-react"
 import Image from "next/image"
+import { BackgroundGradient } from "./ui/background-gradient"
 
 export default function Websites() {
   const [visibleItems, setVisibleItems] = useState([])
@@ -75,65 +76,63 @@ export default function Websites() {
             return (
               <div
                 key={index}
-                className={`group relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-xl hover:shadow-white/10 hover:scale-[1.02] cursor-pointer ${
-                  isVisible ? "animate-scale-in" : "opacity-0"
-                }`}
+                className={`${isVisible ? "animate-scale-in" : "opacity-0"}`}
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
-                {/* Logo */}
-                <div className="mb-6 flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-all group-hover:scale-110 overflow-hidden relative">
-                    {website.logo ? (
-                      <Image
-                        src={website.logo}
-                        alt={`${website.name} logo`}
-                        width={48}
-                        height={48}
-                        className="object-contain"
+                <BackgroundGradient className="rounded-[22px] p-6 sm:p-8 bg-[#1a0a2e]/80 backdrop-blur-md border border-purple-500/20">
+                  {/* Logo */}
+                  <div className="mb-6 flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-purple-900/50 backdrop-blur-sm flex items-center justify-center overflow-hidden border border-purple-500/30">
+                      {website.logo ? (
+                        <Image
+                          src={website.logo}
+                          alt={`${website.name} logo`}
+                          width={48}
+                          height={48}
+                          className="object-contain"
+                        />
+                      ) : (
+                        <div className="text-purple-200 font-bold text-xl">
+                          {website.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-white mb-1">
+                        {website.name}
+                      </h3>
+                      <p className="text-purple-200/70 text-sm">{website.category}</p>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-4">
+                    {[...Array(website.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-4 h-4 fill-purple-400 text-purple-400"
                       />
-                    ) : (
-                      <div className="text-white font-bold text-xl">
-                        {website.name.charAt(0)}
-                      </div>
-                    )}
+                    ))}
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-white transition-colors duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-                      {website.name}
-                    </h3>
-                    <p className="text-white/60 text-sm">{website.category}</p>
-                  </div>
-                </div>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(website.rating)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
+                  {/* Review */}
+                  <p className="text-sm text-purple-100/80 leading-relaxed mb-6">
+                    "{website.review}"
+                  </p>
 
-                {/* Review */}
-                <p className="text-white/80 text-sm leading-relaxed mb-6 group-hover:text-white/90 transition-colors duration-300">
-                  "{website.review}"
-                </p>
-
-                {/* Link */}
-                <a
-                  href={website.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all duration-300 group-hover:scale-105"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <span className="text-sm font-medium">Visit Website</span>
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-
-                {/* Hover effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                  {/* Link */}
+                  <a
+                    href={website.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full pl-4 pr-1 py-1 bg-purple-600/40 backdrop-blur-sm text-white text-xs font-bold hover:bg-purple-500/50 transition-colors border border-purple-500/30"
+                  >
+                    <span>Visit Website</span>
+                    <span className="bg-purple-500/40 rounded-full text-[0.6rem] px-2 py-0 text-white flex items-center justify-center">
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
+                  </a>
+                </BackgroundGradient>
               </div>
             )
           })}

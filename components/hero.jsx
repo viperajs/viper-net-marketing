@@ -1,5 +1,7 @@
 "use client"
 
+import TextType from './ui/TextType'
+
 export default function Hero() {
   // Премахнато canvas анимацията за да се вижда liquid chrome фона
 
@@ -14,12 +16,19 @@ export default function Hero() {
           </span>
         </div>
 
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight animate-fade-in-up stagger-1 drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-          Building{" "}
-          <span className="text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)] animate-float">
-            modern websites
-          </span>{" "}
-          at affordable prices
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+          <TextType
+            text={["Building modern websites at affordable prices"]}
+            as="span"
+            typingSpeed={75}
+            pauseDuration={3000}
+            showCursor
+            cursorCharacter="_"
+            deletingSpeed={50}
+            cursorBlinkDuration={0.5}
+            loop={false}
+            className="text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+          />
         </h1>
 
         <p className="text-lg sm:text-xl text-white/90 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up stagger-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">

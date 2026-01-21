@@ -10,7 +10,7 @@ import Projects from "@/components/projects"
 import Websites from "@/components/websites"
 import Contact from "@/components/contact"
 import Footer from "@/components/footer"
-import LightRays from "@/components/LightRays"
+import LightPillar from "@/components/ui/LightPillar"
 
   export default function Home() {
     const [isScrolled, setIsScrolled] = useState(false)
@@ -24,20 +24,22 @@ import LightRays from "@/components/LightRays"
     }, [])
 
     return (
-      <main className="min-h-screen relative overflow-hidden bg-black">
+      <main className="min-h-screen relative overflow-hidden bg-[#130113]">
         {/* Animated background */}
-        <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0, backgroundColor: '#000000' }}>
-          <LightRays
-            raysOrigin="top-center"
-            raysColor="#00ffff"
-            raysSpeed={1.5}
-            lightSpread={0.8}
-            rayLength={1.2}
-            followMouse={true}
-            mouseInfluence={0.1}
-            noiseAmount={0.0}
-            distortion={0.0}
-            className="custom-rays"
+        <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0, backgroundColor: '#130113' }}>
+          <LightPillar
+            topColor="#220e71"
+            bottomColor="#130113"
+            intensity={1}
+            rotationSpeed={0.3}
+            glowAmount={0.002}
+            pillarWidth={3}
+            pillarHeight={0.4}
+            noiseIntensity={0.5}
+            pillarRotation={25}
+            interactive={false}
+            mixBlendMode="screen"
+            quality="high"
           />
         </div>
         
