@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 
 export async function PUT(request, { params }) {
   const supabase = createClient()
@@ -41,7 +41,7 @@ export async function DELETE(request, { params }) {
 
   // Delete logo from storage if exists
   if (website?.logo_path) {
-    await supabaseAdmin.storage.from('logos').remove([website.logo_path])
+    await getSupabaseAdmin().storage.from('logos').remove([website.logo_path])
   }
 
   const { error } = await supabase

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 import { z } from 'zod'
 
@@ -21,7 +21,7 @@ export async function POST(request) {
 
     const { name, email, message } = parsed.data
 
-    const { error } = await supabaseAdmin
+    const { error } = await getSupabaseAdmin()
       .from('inquiries')
       .insert({ name, email, message })
 

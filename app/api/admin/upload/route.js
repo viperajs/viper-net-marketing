@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 
 export async function POST(request) {
   const supabase = createClient()
@@ -20,7 +20,7 @@ export async function POST(request) {
   const ext = file.name.split('.').pop()
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
 
-  const { error } = await supabaseAdmin.storage
+  const { error } = await getSupabaseAdmin().storage
     .from('logos')
     .upload(filename, buffer, {
       contentType: file.type,
@@ -30,7 +30,7 @@ export async function POST(request) {
     return Response.json({ error: error.message }, { status: 500 })
   }
 
-  const { data: { publicUrl } } = supabaseAdmin.storage
+  const { data: { publicUrl } } = getSupabaseAdmin().storage
     .from('logos')
     .getPublicUrl(filename)
 
