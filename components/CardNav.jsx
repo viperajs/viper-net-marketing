@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { ArrowUpRight } from "lucide-react"
 
 const CardNav = ({
@@ -76,7 +77,7 @@ const CardNav = ({
     >
       <nav
         ref={navRef}
-        className={`card-nav ${isExpanded ? "open" : ""} block p-0 rounded-xl shadow-md relative overflow-hidden transition-[height] duration-400 ease-out will-change-[height]`}
+        className={`card-nav ${isExpanded ? "open" : ""} block p-0 rounded-xl shadow-md relative overflow-hidden transition-[height] duration-400 ease-out will-change-[height] backdrop-blur-xl border border-white/10`}
         style={{ backgroundColor: baseColor, height: "60px" }}
       >
         <div className="card-nav-top absolute inset-x-0 top-0 h-[60px] flex items-center justify-between p-2 pl-[1.1rem] z-[2]">
@@ -101,60 +102,57 @@ const CardNav = ({
           </div>
 
           <div className="logo-container flex items-center order-1">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#14B8A6] to-[#10B8A6] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">V</span>
-            </div>
+            <Image
+              src="/viper-logo.png"
+              alt="Viper Net"
+              width={36}
+              height={36}
+              className="invert drop-shadow-[0_0_16px_rgba(255,255,255,1)] brightness-150 contrast-125"
+            />
           </div>
         </div>
 
         <div
           ref={contentRef}
-          className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col items-stretch gap-2 justify-start z-[1] transition-all duration-300 ${
+          className={`card-nav-content absolute left-0 right-0 top-[60px] bottom-0 p-2 flex flex-col items-stretch gap-1.5 justify-start z-[1] transition-all duration-300 ${
             isExpanded ? "visible pointer-events-auto opacity-100" : "invisible pointer-events-none opacity-0"
           }`}
           aria-hidden={!isExpanded}
         >
-          {(items || []).slice(0, 3).map((item, idx) => (
-            <div
-              key={`${item.label}-${idx}`}
-              className="nav-card select-none relative flex flex-col gap-2 p-[12px_16px] rounded-[calc(0.75rem-0.2rem)] min-w-0 flex-[1_1_auto] h-auto min-h-[60px] transform transition-all duration-400 ease-out"
-              style={{
-                backgroundColor: item.bgColor,
-                color: item.textColor,
-                transform: isExpanded ? "translateY(0)" : "translateY(50px)",
-                opacity: isExpanded ? 1 : 0,
-                transitionDelay: `${idx * 80}ms`,
-              }}
-            >
-              <div className="nav-card-label font-normal tracking-[-0.5px] text-[18px]">
-                {item.label}
-              </div>
-              <div className="nav-card-links mt-auto flex flex-col gap-[2px]">
-                {item.links?.map((lnk, i) => (
-                  <Link
-                    key={`${lnk.label}-${i}`}
-                    className="nav-card-link inline-flex items-center gap-[6px] no-underline cursor-pointer transition-opacity duration-300 hover:opacity-75 text-[15px]"
-                    href={lnk.href || "#"}
-                    aria-label={lnk.ariaLabel || lnk.label}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      closeMenu()
-                      const targetId = lnk.href.replace("#", "")
-                      const targetElement = document.getElementById(targetId)
-                      if (targetElement) {
-                        setTimeout(() => {
-                          targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
-                        }, 100)
-                      }
-                    }}
-                  >
-                    <ArrowUpRight className="nav-card-link-icon shrink-0 w-4 h-4" aria-hidden="true" />
-                    {lnk.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+          {(items || []).map((item, idx) => {
+            const firstLink = item.links?.[0]
+            return (
+              <Link
+                key={`${item.label}-${idx}`}
+                href={firstLink?.href || "#"}
+                aria-label={firstLink?.ariaLabel || item.label}
+                onClick={(e) => {
+                  e.preventDefault()
+                  closeMenu()
+                  const targetId = (firstLink?.href || "").replace("#", "")
+                  const targetElement = document.getElementById(targetId)
+                  if (targetElement) {
+                    setTimeout(() => {
+                      targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+                    }, 100)
+                  }
+                }}
+                className="nav-card select-none relative flex items-center justify-between px-4 py-3 rounded-[calc(0.75rem-0.2rem)] min-w-0 no-underline transform transition-all duration-400 ease-out"
+                style={{
+                  backgroundColor: item.bgColor,
+                  color: item.textColor,
+                  transform: isExpanded ? "translateY(0)" : "translateY(50px)",
+                  opacity: isExpanded ? 1 : 0,
+                  transitionDelay: `${idx * 60}ms`,
+                }}
+              >
+                <span className="font-normal tracking-[-0.5px] text-[16px]">
+                  {item.label}
+                </span>
+                <ArrowUpRight className="shrink-0 w-4 h-4 opacity-50" aria-hidden="true" />
+              </Link>
+            )
+          })}
         </div>
       </nav>
     </div>

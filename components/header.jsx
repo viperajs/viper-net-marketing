@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Home, Briefcase, Mail, Globe } from "lucide-react"
+import Image from "next/image"
+import { Home, Briefcase, Mail, Globe, Star } from "lucide-react"
 import CardNav from "./CardNav"
 
 export default function Header({ isScrolled }) {
   const [activeSection, setActiveSection] = useState("home")
 
   useEffect(() => {
-    const sections = ["home", "services", "websites", "contact"]
+    const sections = ["home", "services", "websites", "reviews", "contact"]
     
     const updateActiveSection = () => {
       const scrollPosition = window.scrollY
@@ -113,13 +114,14 @@ export default function Header({ isScrolled }) {
     { label: "Home", href: "#home", icon: Home },
     { label: "Services", href: "#services", icon: Briefcase },
     { label: "Websites", href: "#websites", icon: Globe },
+    { label: "Reviews", href: "#reviews", icon: Star },
     { label: "Contact", href: "#contact", icon: Mail },
   ]
 
   const cardNavItems = [
     {
       label: "Home",
-      bgColor: "#0a0a0a",
+      bgColor: "rgba(255, 255, 255, 0.08)",
       textColor: "#fff",
       links: [
         { label: "Go to Home", href: "#home", ariaLabel: "Go to Home section" },
@@ -127,7 +129,7 @@ export default function Header({ isScrolled }) {
     },
     {
       label: "Services",
-      bgColor: "#0a0a0a",
+      bgColor: "rgba(255, 255, 255, 0.08)",
       textColor: "#fff",
       links: [
         { label: "View Services", href: "#services", ariaLabel: "View our services" },
@@ -135,15 +137,23 @@ export default function Header({ isScrolled }) {
     },
     {
       label: "Websites",
-      bgColor: "#0a0a0a",
+      bgColor: "rgba(255, 255, 255, 0.08)",
       textColor: "#fff",
       links: [
         { label: "View Websites", href: "#websites", ariaLabel: "View our websites" },
       ],
     },
     {
+      label: "Reviews",
+      bgColor: "rgba(255, 255, 255, 0.08)",
+      textColor: "#fff",
+      links: [
+        { label: "Client Reviews", href: "#reviews", ariaLabel: "View client reviews" },
+      ],
+    },
+    {
       label: "Contact",
-      bgColor: "#0a0a0a",
+      bgColor: "rgba(255, 255, 255, 0.08)",
       textColor: "#fff",
       links: [
         { label: "Get in Touch", href: "#contact", ariaLabel: "Contact us" },
@@ -156,9 +166,9 @@ export default function Header({ isScrolled }) {
       {/* Mobile CardNav */}
       <CardNav
         items={cardNavItems}
-        baseColor="#000"
+        baseColor="rgba(19, 1, 19, 0.85)"
         menuColor="#fff"
-        buttonBgColor="#111"
+        buttonBgColor="rgba(255, 255, 255, 0.1)"
         buttonTextColor="#fff"
       />
 
@@ -171,9 +181,13 @@ export default function Header({ isScrolled }) {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg flex items-center justify-center transition-smooth group-hover:scale-110 group-hover:bg-white/30">
-                <span className="text-white font-bold text-lg drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">V</span>
-              </div>
+              <Image
+                src="/viper-logo.png"
+                alt="Viper Net"
+                width={40}
+                height={40}
+                className="transition-smooth group-hover:scale-110 drop-shadow-[0_0_16px_rgba(255,255,255,1)] invert brightness-150 contrast-125"
+              />
               <span className="text-xl font-bold text-white hidden sm:inline drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">Viper Net</span>
             </Link>
 

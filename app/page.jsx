@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react"
 import Header from "@/components/header"
-import Hero from "@/components/hero"
+import { TuringLanding } from "@/components/ui/hero-landing-page"
 import Services from "@/components/services"
 import Advantages from "@/components/advantages"
 import OurProcess from "@/components/OurProcess"
 import Projects from "@/components/projects"
 import Websites from "@/components/websites"
+import Reviews from "@/components/reviews"
 import Contact from "@/components/contact"
 import Footer from "@/components/footer"
 import LightPillar from "@/components/ui/LightPillar"
@@ -44,12 +45,13 @@ import LightPillar from "@/components/ui/LightPillar"
         </div>
         
         <Header isScrolled={isScrolled} />
-        <Hero />
+        <TuringLanding />
         <Services />
         <Advantages />
         <OurProcess />
         <Projects />
         <Websites />
+        <Reviews />
         <Contact />
         <Footer />
       </main>

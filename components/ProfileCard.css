@@ -435,16 +435,26 @@
     max-width: 100%;
   }
 
+  .pc-avatar-content .avatar {
+    max-height: 60%;
+  }
+
   .pc-details {
-    top: 2em;
+    top: 0;
+  }
+
+  .pc-content:not(.pc-avatar-content) {
+    padding: 1.2em 1.2em;
+    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
   }
 
   .pc-details h3 {
-    font-size: min(4svh, 2.5em);
+    font-size: min(4svh, 2em);
   }
 
   .pc-details p {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .pc-user-info {
