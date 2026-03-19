@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     unoptimized: false,
     remotePatterns: [
@@ -12,7 +13,9 @@ const nextConfig = {
     ],
   },
   trailingSlash: false,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
 };
 
 module.exports = nextConfig;
-

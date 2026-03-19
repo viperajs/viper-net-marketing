@@ -21,6 +21,7 @@ export function TuringLanding() {
         muted
         loop
         playsInline
+        preload="metadata"
       >
         <source
           src="https://mybycketvercelprojecttest.s3.sa-east-1.amazonaws.com/animation-bg.mp4"

@@ -6,18 +6,22 @@ import Image from "next/image"
 import { Home, Briefcase, Mail, Globe, Star } from "lucide-react"
 import CardNav from "./CardNav"
 
-export default function Header({ isScrolled }) {
+export default function Header() {
   const [activeSection, setActiveSection] = useState("home")
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const sections = ["home", "services", "websites", "reviews", "contact"]
-    
+    let ticking = false
+
     const updateActiveSection = () => {
       const scrollPosition = window.scrollY
       const windowHeight = window.innerHeight
       const documentHeight = document.documentElement.scrollHeight
       const headerHeight = 80
-      
+
+      setIsScrolled(scrollPosition > 50)
+
       // Check if we're at the bottom (for contact section) - more lenient check
       if (scrollPosition + windowHeight >= documentHeight - 200) {
         setActiveSection("contact")
@@ -25,7 +29,7 @@ export default function Header({ isScrolled }) {
       }
 
       // Find which section is currently in the viewport
-      let activeSection = "home"
+      let currentSection = "home"
       let maxVisibility = 0
 
       sections.forEach((sectionId) => {
@@ -34,22 +38,22 @@ export default function Header({ isScrolled }) {
           const rect = element.getBoundingClientRect()
           const sectionTop = rect.top + scrollPosition
           const sectionBottom = sectionTop + rect.height
-          
+
           // Check if section is visible in viewport (with header offset)
           const viewportTop = scrollPosition + headerHeight
           const viewportBottom = scrollPosition + windowHeight
-          
+
           // Calculate how much of the section is visible
           const visibleTop = Math.max(sectionTop, viewportTop)
           const visibleBottom = Math.min(sectionBottom, viewportBottom)
           const visibleHeight = Math.max(0, visibleBottom - visibleTop)
           const visibility = visibleHeight / rect.height
-          
+
           // Prefer sections that are more visible and in the upper part of viewport
           if (visibility > 0.3 && rect.top < windowHeight * 0.7) {
             if (visibility > maxVisibility) {
               maxVisibility = visibility
-              activeSection = sectionId
+              currentSection = sectionId
             }
           }
         }
@@ -66,22 +70,22 @@ export default function Header({ isScrolled }) {
             const rect = element.getBoundingClientRect()
             const sectionTop = rect.top
             const sectionBottom = rect.bottom
-            
+
             // Score based on how much is visible and position
             let score = 0
-            
+
             if (sectionTop < windowHeight && sectionBottom > headerHeight) {
               const visibleTop = Math.max(sectionTop, headerHeight)
               const visibleBottom = Math.min(sectionBottom, windowHeight)
               const visibleHeight = Math.max(0, visibleBottom - visibleTop)
               score = visibleHeight / rect.height
-              
+
               // Bonus for sections near the top
               if (sectionTop < windowHeight * 0.5) {
                 score += 0.5
               }
             }
-            
+
             if (score > bestScore) {
               bestScore = score
               bestSection = sectionId
@@ -89,24 +93,32 @@ export default function Header({ isScrolled }) {
           }
         })
 
-        activeSection = bestSection
+        currentSection = bestSection
       }
 
-      setActiveSection(activeSection)
+      setActiveSection(currentSection)
+    }
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateActiveSection()
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
     // Initial check
     updateActiveSection()
 
-    // Listen to scroll events
-    window.addEventListener("scroll", updateActiveSection, { passive: true })
-    
-    // Also check on resize
-    window.addEventListener("resize", updateActiveSection, { passive: true })
+    // Listen to scroll events with RAF throttle
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll, { passive: true })
 
     return () => {
-      window.removeEventListener("scroll", updateActiveSection)
-      window.removeEventListener("resize", updateActiveSection)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
     }
   }, [])
 
