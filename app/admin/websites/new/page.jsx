@@ -44,10 +44,12 @@ export default function NewWebsite() {
           method: "POST",
           body: formData,
         })
-        if (uploadRes.ok) {
-          const { path } = await uploadRes.json()
-          logo_path = path
+        if (!uploadRes.ok) {
+          const { error } = await uploadRes.json().catch(() => ({}))
+          throw new Error(error || "Logo upload failed")
         }
+        const { path } = await uploadRes.json()
+        logo_path = path
       }
 
       const res = await fetch("/api/admin/websites", {
@@ -61,7 +63,7 @@ export default function NewWebsite() {
       toast.success("Website added")
       router.push("/admin/websites")
     } catch (err) {
-      toast.error("Failed to save website")
+      toast.error(err.message || "Failed to save website")
     } finally {
       setSaving(false)
     }

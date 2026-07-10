@@ -121,7 +121,7 @@ export default function Reviews() {
                   <div>
                     <p className="text-white text-sm font-medium">{review.name}</p>
                     <p className="text-white/30 text-xs">
-                      {new Date(review.created_at).toLocaleDateString()}
+                      {new Date(review.created_at).toLocaleDateString("en-US")}
                     </p>
                   </div>
                 </div>

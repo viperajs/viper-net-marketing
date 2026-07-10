@@ -75,10 +75,12 @@ export default function EditWebsite() {
           method: "POST",
           body: formData,
         })
-        if (uploadRes.ok) {
-          const { path } = await uploadRes.json()
-          logo_path = path
+        if (!uploadRes.ok) {
+          const { error } = await uploadRes.json().catch(() => ({}))
+          throw new Error(error || "Logo upload failed")
         }
+        const { path } = await uploadRes.json()
+        logo_path = path
       }
 
       const { logo_path: _, ...rest } = form
@@ -93,7 +95,7 @@ export default function EditWebsite() {
       toast.success("Website updated")
       router.push("/admin/websites")
     } catch (err) {
-      toast.error("Failed to update website")
+      toast.error(err.message || "Failed to update website")
     } finally {
       setSaving(false)
     }
