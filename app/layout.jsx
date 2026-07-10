@@ -11,24 +11,24 @@ const poppins = Poppins({
 
 export const metadata = {
   metadataBase: new URL("https://viper-net.com"),
-  title: "Viper Net - Уеб дизайн, SEO оптимизация и онлайн магазини",
-  description: "Професионални дигитални решения за вашия бизнес. Уеб дизайн, SEO оптимизация и онлайн магазини. Модерни, бързи и сигурни уебсайтове.",
+  title: "Viper Net - Web Design, SEO Optimization & Online Stores",
+  description: "Professional digital solutions for your business. Web design, SEO optimization, and online stores. Modern, fast, and secure websites.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
     apple: "/favicon.ico",
   },
   openGraph: {
-    title: "Viper Net - Професионални дигитални решения",
-    description: "Модерни уебсайтове, SEO оптимизация и онлайн магазини за вашия бизнес.",
+    title: "Viper Net - Professional Digital Solutions",
+    description: "Modern websites, SEO optimization, and online stores for your business.",
     type: "website",
-    locale: "bg_BG",
+    locale: "en_US",
     siteName: "Viper Net",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Viper Net - Професионални дигитални решения",
-    description: "Модерни уебсайтове, SEO оптимизация и онлайн магазини за вашия бизнес.",
+    title: "Viper Net - Professional Digital Solutions",
+    description: "Modern websites, SEO optimization, and online stores for your business.",
   },
   robots: {
     index: true,
