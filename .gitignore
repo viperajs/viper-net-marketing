@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 10K website build: raw generations and review files never ship
+/review/shots/
+/review/*.mp4
+/review/*.png
