@@ -4,7 +4,7 @@
 
   var VIDEO_URL = 'assets/hero-scrub.mp4';
   var POSTER_URL = 'assets/hero-poster.jpg';
-  var VIDEO_BYTES = 6000000;
+  var VIDEO_BYTES = 5617821;
 
   var hero = document.getElementById('hero');
   var stage = document.getElementById('stage');

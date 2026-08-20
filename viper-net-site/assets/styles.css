@@ -1,9 +1,9 @@
 /* ============ Viper Net — tokens ============ */
 :root{
-  --canvas:#0B0714;
-  --canvas-2:#0E0A1B;
-  --panel:#150E27;
-  --panel-2:#1B1231;
+  --canvas:#090711;
+  --canvas-2:#0E0C1A;
+  --panel:#151225;
+  --panel-2:#1A162E;
   --accent:#3BE573;
   --accent-hover:#63F293;
   --accent-muted:rgba(59,229,115,.18);
@@ -138,10 +138,10 @@ main:focus{outline:none}
 .band-2{align-items:flex-end;text-align:right}
 .band-4{align-items:center;text-align:center;justify-content:flex-start;padding-top:18svh}
 .band .kicker{margin-bottom:1.1rem}
-.band h1{font-size:clamp(2.6rem,7.4vw,5.6rem);max-width:15ch}
-.band h2{font-size:clamp(2.3rem,6vw,4.6rem);max-width:16ch}
+.band h1{font-size:clamp(2.6rem,5.4vw,4.2rem);max-width:9ch}
+.band h2{font-size:clamp(2.3rem,5.2vw,4rem);max-width:13ch}
 .band .lead{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,4.1vw,3.2rem);line-height:1.1;
-  letter-spacing:-.02em;max-width:19ch}
+  letter-spacing:-.02em;max-width:11ch}
 .band-2 .lead{margin-left:auto}
 .settle-sub{margin:1.3rem auto 0;color:#DED7EE;font-size:clamp(1rem,1.6vw,1.15rem);max-width:46ch}
 .settle-cta{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:2rem}
@@ -306,7 +306,8 @@ section{position:relative;z-index:2}
 
 /* ============ 06 start ============ */
 .start{position:relative;padding:clamp(6rem,14vh,10rem) clamp(1.2rem,4vw,2.4rem);overflow:hidden}
-.start-art{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5}
+.start-art{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5;
+  background-image:url("hero-ending.jpg")}
 .start::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(to bottom,var(--canvas) 0%,rgba(11,7,20,.72) 30%,rgba(11,7,20,.86) 100%)}
 .start-inner{position:relative;z-index:2;width:var(--shell);margin:0 auto;display:grid;
