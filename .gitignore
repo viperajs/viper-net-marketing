@@ -44,3 +44,4 @@ next-env.d.ts
 /review/shots/
 /review/*.mp4
 /review/*.png
+/review/raw/

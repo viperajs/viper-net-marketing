@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic"
 import Header from "@/components/header"
-import { TuringLanding } from "@/components/ui/hero-landing-page"
+import CinematicHero from "@/components/CinematicHero"
 import Services from "@/components/services"
 import Advantages from "@/components/advantages"
 import OurProcess from "@/components/OurProcess"
@@ -35,7 +35,7 @@ export default function Home() {
       </div>
 
       <Header />
-      <TuringLanding />
+      <CinematicHero />
       <Services />
       <Advantages />
       <OurProcess />
