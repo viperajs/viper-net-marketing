@@ -73,6 +73,25 @@ html = html.replace('<script src="assets/app.js"></script>',
 html = html.replace('<meta property="og:image" content="https://example.com/assets/hero-poster.jpg">',
                     '<meta property="og:image" content="' + poster + '">')
 
+# Preview-only: narrow the static-hero gates. The shipped page swaps the scrub
+# for the composed still on phones and in any portrait frame under 1024px, which
+# is exactly the shape of a preview panel, so the preview would never show the
+# thing it exists to show. Reduced motion is still honoured. Both sides of the
+# gate are rewritten together: the CSS media query list and the JS array must
+# always agree, or one side loads what the other hides.
+PREVIEW_GATES = [
+    "(max-width: 420px)",
+    "(orientation: landscape) and (pointer: coarse) and (max-height: 560px)",
+    "(prefers-reduced-motion: reduce)",
+]
+old_css_gates = re.search(r"@media \(max-width: 720px\),\n.*?\(prefers-reduced-motion: reduce\)\{", html, re.S)
+assert old_css_gates, "the CSS gate list changed shape"
+html = html.replace(old_css_gates.group(0), "@media " + ",\n       ".join(PREVIEW_GATES) + "{")
+old_js_gates = re.search(r"  var GATES = \[.*?\n  \];", html, re.S)
+assert old_js_gates, "the JS gate list changed shape"
+html = html.replace(old_js_gates.group(0),
+                    "  var GATES = [\n" + ",\n".join("    '" + g + "'" for g in PREVIEW_GATES) + "\n  ];")
+
 # the artifact host supplies the document skeleton, so ship the page content only
 body = re.search(r"<body>(.*)</body>", html, re.S).group(1)
 styles = re.findall(r"<style>.*?</style>", html, re.S)
