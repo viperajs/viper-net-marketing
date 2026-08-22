@@ -241,9 +241,9 @@
 .vn-root .vn-case-img{position:absolute;inset:0;background-size:cover;background-position:center;
   transform:scale(1.02);transition:transform 1.4s var(--ease)}
 .vn-root .vn-case:hover .vn-case-img{transform:scale(1.07)}
-.vn-root .vn-case-img-1{background-image:linear-gradient(135deg,#1D1235,#0C1A16)}
-.vn-root .vn-case-img-2{background-image:linear-gradient(135deg,#171034,#231038)}
-.vn-root .vn-case-img-3{background-image:linear-gradient(135deg,#0C1A18,#141033)}
+.vn-root .vn-case-img-1{background-image:url("/work/case-1.jpg"),linear-gradient(135deg,#1D1235,#0C1A16)}
+.vn-root .vn-case-img-2{background-image:url("/work/case-2.jpg"),linear-gradient(135deg,#171034,#231038)}
+.vn-root .vn-case-img-3{background-image:url("/work/case-3.jpg"),linear-gradient(135deg,#0C1A18,#141033)}
 .vn-root .vn-case-art::after{content:"";position:absolute;inset:0;
   background:radial-gradient(120% 90% at 20% 10%,rgba(59,229,115,.16),transparent 60%);opacity:.7;
   animation:vn-sheen 9s var(--ease-soft) -2.4s infinite alternate}

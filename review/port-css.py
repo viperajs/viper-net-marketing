@@ -50,7 +50,9 @@ for name in KEYFRAMES:
 for i, raw in enumerate(URLS):
     # the standalone build keeps these beside the stylesheet; Next serves them
     # from public/
-    raw = raw.replace("fonts/", "/fonts/").replace('"hero-', '"/hero/hero-').replace("'hero-", "'/hero/hero-")
+    raw = (raw.replace("fonts/", "/fonts/")
+              .replace('"hero-', '"/hero/hero-').replace("'hero-", "'/hero/hero-")
+              .replace('"case-', '"/work/case-').replace("'case-", "'/work/case-"))
     css = css.replace("__VN_URL_%d__" % i, raw)
 
 def scope_selector(sel):
