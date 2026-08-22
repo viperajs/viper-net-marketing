@@ -15,7 +15,7 @@ const LightPillar = dynamic(() => import("@/components/ui/LightPillar"), {
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative overflow-hidden bg-[#130113]">
+    <main className="min-h-screen relative overflow-x-clip bg-[#130113]">
       {/* Animated background */}
       <div style={{ width: '100%', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0, backgroundColor: '#130113' }}>
         <LightPillar
