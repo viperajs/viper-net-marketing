@@ -98,8 +98,8 @@
 .vn-root .vn-nav-links a{position:relative;text-decoration:none;color:var(--text-secondary);transition:color .35s var(--ease)}
 .vn-root .vn-nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;background:var(--accent);
   transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
-.vn-root .vn-nav-links a:hover{color:var(--text-primary)}
-.vn-root .vn-nav-links a:hover::after{transform:scaleX(1)}
+.vn-root .vn-nav-links a:hover,.vn-root .vn-nav-links a.vn-current{color:var(--text-primary)}
+.vn-root .vn-nav-links a:hover::after,.vn-root .vn-nav-links a.vn-current::after{transform:scaleX(1)}
 @media (max-width:860px){.vn-root .vn-nav-links{display:none}.vn-root .vn-nav .vn-btn-sm{margin-left:auto}}
 
 /* ============ buttons ============ */

@@ -387,8 +387,26 @@ export default function CinematicSite() {
       observers.push(liveIO);
     }
 
+    // the nav link for the section the reader is actually in, lit with the same
+    // underline the hover state uses. Delta gated: it writes only on a change.
+    const navLinks = qa(".vn-nav-links a").map((a) => ({ a, section: q(a.getAttribute("href")) })).filter((l) => l.section);
+    let currentLink = null;
+    function markCurrentSection() {
+      const line = window.innerHeight * 0.4;
+      let found = null;
+      for (const l of navLinks) {
+        const r = l.section.getBoundingClientRect();
+        if (r.top <= line && r.bottom > line) found = l.a;
+      }
+      if (found === currentLink) return;
+      if (currentLink) currentLink.classList.remove("vn-current");
+      if (found) found.classList.add("vn-current");
+      currentLink = found;
+    }
+
     function onPageScroll() {
       drawSpine();
+      markCurrentSection();
       if (nav) nav.classList.toggle("vn-solid", window.scrollY > 60);
       if (pendingReveals.size) {
         for (const el of pendingReveals) {

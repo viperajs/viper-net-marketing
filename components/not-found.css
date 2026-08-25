@@ -1,0 +1,67 @@
+/* The 404, in the same language as the rest of the site. It reuses the tokens
+   and the button, chip and link styles from cinematic-site.css by sitting
+   inside .vn-root; only the page's own layout lives here. */
+
+.vn-root .vn-nf {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(2rem, 8vw, 6rem) clamp(1.4rem, 6vw, 4rem);
+  position: relative;
+  overflow: hidden;
+}
+.vn-root .vn-nf-inner {
+  position: relative;
+  padding-left: clamp(1.4rem, 3vw, 2.6rem);
+  z-index: 2;
+  width: min(46rem, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.4rem;
+}
+.vn-root .vn-nf h1 {
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  max-width: 12ch;
+}
+.vn-root .vn-nf .vn-lead {
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.65;
+  max-width: 46ch;
+}
+.vn-root .vn-nf .vn-settle-cta {
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+/* the strike line, running down beside the words and stopping dead: the page
+   the visitor asked for is not on it */
+.vn-root .vn-nf-line {
+  position: absolute;
+  left: -1px;
+  top: -18vh;
+  bottom: -18vh;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent 0%, var(--accent) 26%, var(--accent) 62%, transparent 63%);
+  opacity: 0.55;
+}
+/* the node where it stops */
+.vn-root .vn-nf-line::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 62%;
+  width: 7px;
+  height: 7px;
+  margin: -4px 0 0 -3px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  box-shadow: 0 0 18px 2px rgba(59, 229, 115, 0.55);
+}
+.vn-root .vn-nf-glow {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(50% 45% at 18% 42%, rgba(59, 229, 115, 0.1), transparent 70%);
+}

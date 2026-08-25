@@ -85,8 +85,8 @@ main:focus{outline:none}
 .nav-links a{position:relative;text-decoration:none;color:var(--text-secondary);transition:color .35s var(--ease)}
 .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;background:var(--accent);
   transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
-.nav-links a:hover{color:var(--text-primary)}
-.nav-links a:hover::after{transform:scaleX(1)}
+.nav-links a:hover,.nav-links a.current{color:var(--text-primary)}
+.nav-links a:hover::after,.nav-links a.current::after{transform:scaleX(1)}
 @media (max-width:860px){.nav-links{display:none}.nav .btn-sm{margin-left:auto}}
 
 /* ============ buttons ============ */
