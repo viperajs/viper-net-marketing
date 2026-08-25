@@ -45,3 +45,4 @@ next-env.d.ts
 /review/*.mp4
 /review/*.png
 /review/raw/
+/review/scroll-preview.mp4
