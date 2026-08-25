@@ -31,9 +31,12 @@ for name, file in [("syne", "syne.woff2"), ("manrope", "manrope.woff2"),
     uri = data_uri(SITE / "assets" / "fonts" / file, "font/woff2")
     fonts_css = fonts_css.replace(f"url('fonts/{file}')", f"url('{uri}')")
 
-# images referenced from the stylesheet
-ending = data_uri(SITE / "assets" / "hero-ending.jpg", "image/jpeg")
-styles_css = styles_css.replace('url("hero-ending.jpg")', f'url("{ending}")')
+# every image the stylesheet references, inlined: the artifact host blocks
+# outside requests and relative paths do not resolve inside it
+for name in ("hero-ending.jpg", "case-1.jpg", "case-2.jpg", "case-3.jpg"):
+    uri = data_uri(SITE / "assets" / name, "image/jpeg")
+    styles_css = styles_css.replace(f'url("{name}")', f'url("{uri}")')
+assert "url(\"case-" not in styles_css and "url(\"hero-" not in styles_css, "an image reference was left pointing at a file"
 
 # the script's two asset URLs
 poster = data_uri(SITE / "assets" / "hero-poster.jpg", "image/jpeg")
