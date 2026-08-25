@@ -16,8 +16,10 @@ const URL = process.argv[2] || 'http://127.0.0.1:3000/';
   await sleep(6000);
 
   console.log('sections:', await evaluate(c, "[...document.querySelectorAll('main > section')].map(s=>s.id).join(' ')"));
-  console.log('fonts (Syne / JetBrains Mono):', await evaluate(c,
-    "document.fonts.check('800 40px Syne') + ' / ' + document.fonts.check('500 12px \"JetBrains Mono\"')"));
+  // document.fonts.check() answers true for a missing family, because a fallback
+  // satisfies the request. The face list is the honest source.
+  console.log('font faces loaded:', await evaluate(c,
+    "[...document.fonts].map(f => f.family + ' ' + f.weight + ' ' + f.status).join(', ') || 'none'"));
 
   // scroll the whole page so every reveal and the track get their chance
   await evaluate(c, `(async () => {

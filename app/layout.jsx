@@ -21,7 +21,7 @@ export const metadata = {
     locale: "en_US",
     siteName: "Viper Net",
     url: "/",
-    images: [{ url: "/hero/hero-poster.jpg", width: 1928, height: 1076, alt: "A thread of green light falling through the dark" }],
+    images: [{ url: "/hero/hero-poster.jpg", width: 1928, height: 1076, alt: "A cold beam of light falling through a stack of precision lenses" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -36,7 +36,7 @@ export const metadata = {
 }
 
 export const viewport = {
-  themeColor: "#090711",
+  themeColor: "#080D14",
 };
 
 export default function RootLayout({ children }) {

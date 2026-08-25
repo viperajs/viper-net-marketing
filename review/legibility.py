@@ -13,6 +13,9 @@ BOXES = sys.argv[1]
 FRAMES = sorted(glob.glob(sys.argv[2] + '/*.png'))
 DURATION = 6.041667
 FPS = 12.0
+# the page holds the film on frame one for the first slice of hero scroll, so a
+# band's progress range does not map straight onto film time
+HOLD = 0.15
 
 d = json.load(open(BOXES))
 VW, VH = d['viewport']['w'], d['viewport']['h']
@@ -81,9 +84,10 @@ def dedupe(boxes):
 print(f'video {NW}x{NH} -> stage {VW}x{VH}, cover scale {scale:.4f}, offset ({offx:.1f},{offy:.1f})')
 worst_overall = (999, None)
 for band in d['bands']:
-    cls = [c for c in band['cls'].split() if c.startswith('band-')][0]
+    cls = [c for c in band['cls'].split() if c.startswith('band-') or c.startswith('vn-band-')][0].replace('vn-', '')
     g_local = LOCAL[cls]
-    lo, hi = band['from'] * DURATION, band['to'] * DURATION
+    film = lambda p: max(0.0, min(1.0, (p - HOLD) / (1 - HOLD)))
+    lo, hi = film(band['from']) * DURATION, film(band['to']) * DURATION
     idx = [k for k in range(len(FRAMES)) if lo <= k / FPS <= hi]
     boxes = dedupe(band['boxes'])
     band_worst = (999, None)

@@ -4,7 +4,10 @@
 
   var VIDEO_URL = 'assets/hero-scrub.mp4';
   var POSTER_URL = 'assets/hero-poster.jpg';
-  var VIDEO_BYTES = 5617821;
+  var VIDEO_BYTES = 6957468;
+  // the film holds on frame one for this much of the hero scroll, so the
+  // headline gets a plateau before the bright pass through the glass begins
+  var HOLD = 0.15;
 
   var hero = document.getElementById('hero');
   var stage = document.getElementById('stage');
@@ -113,6 +116,8 @@
   }
 
   /* ---------- hero progress ---------- */
+  function filmTime(p) { return clamp((p - HOLD) / (1 - HOLD), 0, 1); }
+
   function heroProgress() {
     var range = hero.offsetHeight - window.innerHeight;
     if (range <= 0) return 0;
@@ -208,7 +213,7 @@
         video.src = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
         video.load();
         video.addEventListener('canplay', function () {
-          requestSeek(heroProgress() * video.duration);
+          requestSeek(filmTime(heroProgress()) * video.duration);
           stage.classList.add('video-ready');
         }, { once: true });
       });

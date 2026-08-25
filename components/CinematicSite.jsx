@@ -6,7 +6,11 @@ import "./cinematic-site.css";
 const VIDEO_URL = "/hero/hero-scrub.mp4";
 const POSTER_URL = "/hero/hero-poster.jpg";
 // the real byte size, the loading ring's fallback when Content-Length is missing
-const VIDEO_BYTES = 5617821;
+const VIDEO_BYTES = 6957468;
+// the film holds on frame one for this much of the hero scroll, so the headline
+// gets a plateau before the bright pass through the glass begins
+const HOLD = 0.15;
+const filmTime = (p) => clamp((p - HOLD) / (1 - HOLD), 0, 1);
 
 // the five static-hero gates. These must stay identical to the media query list
 // at the bottom of cinematic-site.css, or one side loads what the other hides.
@@ -47,7 +51,7 @@ function split(el, mode, spread, rand) {
   words.forEach((word, wi) => {
     const w = document.createElement("span");
     w.className = "vn-w";
-    if (mode === "drift" || mode === "rise") {
+    if (mode === "focus" || mode === "rise") {
       w.style.setProperty("--th", (wi / Math.max(1, words.length)) * 0.5);
     } else if (mode === "punch") {
       w.style.setProperty("--th", (wi / Math.max(1, words.length)) * 0.46);
@@ -57,7 +61,7 @@ function split(el, mode, spread, rand) {
       const c = document.createElement("span");
       c.className = "vn-c";
       c.textContent = word[i];
-      if (mode === "grid") {
+      if (mode === "aperture") {
         c.style.setProperty("--th", (charIndex / Math.max(1, totalChars)) * (spread || 0.5) + rand() * 0.06);
         c.style.setProperty("--jx", (18 + rand() * 34).toFixed(1) + "px");
       }
@@ -185,7 +189,7 @@ export default function CinematicSite() {
       } else {
         rafId = requestAnimationFrame(tick);
       }
-      if (video.duration) requestSeek(shown * video.duration);
+      if (video.duration) requestSeek(filmTime(shown) * video.duration);
       updateCaptions(shown);
     }
     function onScroll() {
@@ -268,7 +272,7 @@ export default function CinematicSite() {
           video.addEventListener(
             "canplay",
             () => {
-              requestSeek(heroProgress() * video.duration);
+              requestSeek(filmTime(heroProgress()) * video.duration);
               stage.classList.add("vn-video-ready");
             },
             { once: true }
@@ -674,17 +678,17 @@ export default function CinematicSite() {
             </svg>
 
             <div className="vn-bands" id="bands">
-              <div className="vn-band vn-band-1" data-band="0.00,0.20" data-entrance="drift" data-ramp="0.05">
+              <div className="vn-band vn-band-1" data-band="0.00,0.13" data-entrance="focus" data-ramp="0.05">
                 <p className="vn-chip vn-kicker">Viper Net</p>
                 <h1 className="vn-split">Websites built to strike.</h1>
               </div>
-              <div className="vn-band vn-band-2" data-band="0.25,0.46" data-entrance="grid" data-spread="0.5">
+              <div className="vn-band vn-band-2" data-band="0.44,0.58" data-entrance="aperture" data-spread="0.5">
                 <p className="vn-split vn-lead">No ghosting. No six month builds.</p>
               </div>
-              <div className="vn-band vn-band-3" data-band="0.51,0.72" data-entrance="punch">
+              <div className="vn-band vn-band-3" data-band="0.62,0.75" data-entrance="punch">
                 <p className="vn-split vn-lead">Fast to load. Easy to find. Finished on time.</p>
               </div>
-              <div className="vn-band vn-band-4 vn-settle" data-band="0.77,1.00" data-entrance="rise">
+              <div className="vn-band vn-band-4 vn-settle" data-band="0.80,1.00" data-entrance="rise">
                 <h2 className="vn-split">Your site. Live in weeks.</h2>
                 <p className="vn-settle-sub">Design, build and launch, handled end to end by one team.</p>
                 <div className="vn-settle-cta">
