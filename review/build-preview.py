@@ -25,11 +25,13 @@ fonts_css = (SITE / "assets" / "fonts.css").read_text()
 styles_css = (SITE / "assets" / "styles.css").read_text()
 app_js = (SITE / "assets" / "app.js").read_text()
 
-# fonts
-for name, file in [("syne", "syne.woff2"), ("manrope", "manrope.woff2"),
-                   ("jetbrains-mono", "jetbrains-mono.woff2")]:
+# fonts: whatever the stylesheet actually references, so a change of type trio
+# does not silently ship a page with no fonts in it
+import re as _re
+for file in sorted(set(_re.findall(r"url\('fonts/([^']+)'\)", fonts_css))):
     uri = data_uri(SITE / "assets" / "fonts" / file, "font/woff2")
     fonts_css = fonts_css.replace(f"url('fonts/{file}')", f"url('{uri}')")
+assert "url('fonts/" not in fonts_css, "a font reference was left pointing at a file"
 
 # every image the stylesheet references, inlined: the artifact host blocks
 # outside requests and relative paths do not resolve inside it
