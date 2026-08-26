@@ -440,6 +440,24 @@ section{position:relative;z-index:2}
   .scene-count{display:none}
 }
 
+
+/* ---- the film behind a scene ---- */
+/* In a scene the footage is atmosphere, not the subject: it sits well back,
+   dimmed and under its own scrim, so the copy on top stays the thing you read.
+   The hero is the opposite, and that difference is the point. */
+.scene-film{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;
+  transition:opacity 1.1s var(--ease)}
+.scene-film.ready{opacity:.55}
+.scene-film video{width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(calc(1.06 - var(--sc,0) * .04)) translate3d(0,0,0)}
+.scene-film::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 85% at 50% 50%,rgba(8,13,20,.62) 0%,rgba(8,13,20,.86) 70%,var(--canvas) 100%)}
+.scene-stage>*:not(.scene-film){position:relative;z-index:2}
+
+@media (max-width:860px),(max-height:700px),(prefers-reduced-motion: reduce){
+  .scene-film{display:none}
+}
+
 /* ============ the five static-hero gates (must match app.js exactly) ============ */
 @media (max-width: 720px),
        (orientation: portrait) and (max-width: 1024px),

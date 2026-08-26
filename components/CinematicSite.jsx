@@ -74,6 +74,40 @@ function split(el, mode, spread, rand) {
   el.appendChild(vis);
 }
 
+
+// One seek in flight per video, newest target wins. The hero and every scene
+// film share this: without it, fast scrolling queues seeks and the picture lags
+// behind the page by a growing margin.
+function gatedSeek(video, onFail) {
+  let busy = false;
+  let pending = null;
+  const pump = () => {
+    busy = false;
+    if (pending !== null) {
+      const t = pending;
+      pending = null;
+      seek(t);
+    }
+  };
+  const fail = () => {
+    busy = false;
+    pending = null;
+    if (onFail) onFail();
+  };
+  function seek(t) {
+    if (!video.duration || isNaN(t)) return;
+    if (busy) {
+      pending = t;
+      return;
+    }
+    busy = true;
+    video.currentTime = t;
+  }
+  video.addEventListener("seeked", pump);
+  video.addEventListener("error", fail);
+  return { seek, dispose: () => { video.removeEventListener("seeked", pump); video.removeEventListener("error", fail); } };
+}
+
 export default function CinematicSite() {
   const rootRef = useRef(null);
 
@@ -468,6 +502,46 @@ export default function CinematicSite() {
       s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 62)}vh)`;
     });
 
+
+    // A scene's film is fetched only as the reader approaches it, and never on
+    // the screens that get the static hero, so a phone downloads none of it.
+    const filmCleanups = [];
+    if (!GATES.some((query) => matchMedia(query).matches) && "IntersectionObserver" in window) {
+      const filmIO = new IntersectionObserver((es) => {
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          filmIO.unobserve(e.target);
+          const scene = scenes.find((sc) => sc.el === e.target);
+          if (!scene || scene.film) return;
+          const wrap = scene.el.querySelector(".vn-scene-film");
+          const video = wrap && wrap.querySelector("video");
+          if (!video) return;
+          // VP9 is roughly a third the size of the h264 at the same quality once
+          // the film is dimmed behind a scrim, so prefer it where it decodes
+          const webm = scene.el.dataset.filmWebm;
+          const url = webm && video.canPlayType('video/webm; codecs="vp9"') ? webm : scene.el.dataset.film;
+          if (!url) return;
+          const ctrl = new AbortController();
+          filmCleanups.push(() => ctrl.abort());
+          fetch(url, { signal: ctrl.signal })
+            .then((res) => (res.ok ? res.blob() : Promise.reject(new Error("no film"))))
+            .then((blob) => {
+              video.src = URL.createObjectURL(blob);
+              video.load();
+              video.addEventListener("canplay", () => {
+                scene.film = gatedSeek(video, () => wrap.classList.remove("vn-ready"));
+                scene.video = video;
+                wrap.classList.add("vn-ready");
+                scene.p = -2;
+              }, { once: true });
+            })
+            // the scene is complete without it: the copy and the scrim stand alone
+            .catch(() => {});
+        });
+      }, { rootMargin: "120% 0px" });
+      scenes.forEach((sc) => { if (sc.el.dataset.film) filmIO.observe(sc.el); });
+      observers.push(filmIO);
+    }
     function updateScenes() {
       const vh = window.innerHeight;
       for (const s of scenes) {
@@ -477,6 +551,7 @@ export default function CinematicSite() {
         if (Math.abs(p - s.p) < 0.004) continue;
         s.p = p;
         s.el.style.setProperty("--sc", p.toFixed(3));
+        if (s.film && s.video.duration) s.film.seek(p * s.video.duration);
         const n = s.items.length;
         // items arrive between LEAD and TAIL, so the first one is already there
         // when the scene pins and the last one has a plateau before it releases
@@ -700,6 +775,11 @@ export default function CinematicSite() {
 
     return () => {
       cleanups.forEach((fn) => fn());
+      filmCleanups.forEach((fn) => fn());
+      scenes.forEach((sc) => {
+        if (sc.film) sc.film.dispose();
+        if (sc.video && sc.video.src.startsWith("blob:")) URL.revokeObjectURL(sc.video.src);
+      });
       window.removeEventListener("scroll", onScroll);
       observers.forEach((o) => o.disconnect());
       if (rafId !== null) cancelAnimationFrame(rafId);
@@ -830,8 +910,9 @@ export default function CinematicSite() {
         </section>
 
         {/* ================= WHAT WE DO ================= */}
-        <section className="vn-services vn-scene" id="services" aria-labelledby="services-h" data-scene="4">
+        <section className="vn-services vn-scene" id="services" aria-labelledby="services-h" data-scene="4" data-film="/hero/scene-services.mp4" data-film-webm="/hero/scene-services.webm">
           <div className="vn-scene-stage">
+            <div className="vn-scene-film" aria-hidden="true"><video muted playsInline preload="none" tabIndex={-1} /></div>
           <header className="vn-sec-head vn-reveal">
             <p className="vn-chip">01 / What we do</p>
             <h2 id="services-h">Four things, done properly.</h2>
@@ -874,8 +955,9 @@ export default function CinematicSite() {
         </section>
 
         {/* ================= THE WORK ================= */}
-        <section className="vn-work vn-scene vn-scene-work" id="work" aria-labelledby="work-h" data-scene="3" data-mode="swap">
+        <section className="vn-work vn-scene vn-scene-work" id="work" aria-labelledby="work-h" data-scene="3" data-mode="swap" data-film="/hero/scene-work.mp4" data-film-webm="/hero/scene-work.webm">
           <div className="vn-scene-stage">
+            <div className="vn-scene-film" aria-hidden="true"><video muted playsInline preload="none" tabIndex={-1} /></div>
           <header className="vn-sec-head vn-work-head vn-reveal">
             <p className="vn-chip">02 / The work</p>
             <h2 id="work-h">Live sites, real businesses.</h2>
@@ -941,8 +1023,9 @@ export default function CinematicSite() {
         </section>
 
         {/* ================= HOW IT GOES ================= */}
-        <section className="vn-process vn-scene" id="process" aria-labelledby="process-h" data-scene="4">
+        <section className="vn-process vn-scene" id="process" aria-labelledby="process-h" data-scene="4" data-film="/hero/scene-process.mp4" data-film-webm="/hero/scene-process.webm">
           <div className="vn-scene-stage">
+            <div className="vn-scene-film" aria-hidden="true"><video muted playsInline preload="none" tabIndex={-1} /></div>
           <header className="vn-sec-head vn-reveal">
             <p className="vn-chip">03 / How it goes</p>
             <h2 id="process-h">Plan. Build. Launch.</h2>

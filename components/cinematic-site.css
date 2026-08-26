@@ -454,6 +454,24 @@
   .vn-root .vn-scene-count{display:none}
 }
 
+
+/* ---- the film behind a scene ---- */
+/* In a scene the footage is atmosphere, not the subject: it sits well back,
+   dimmed and under its own scrim, so the copy on top stays the thing you read.
+   The hero is the opposite, and that difference is the point. */
+.vn-root .vn-scene-film{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;
+  transition:opacity 1.1s var(--ease)}
+.vn-root .vn-scene-film.vn-ready{opacity:.55}
+.vn-root .vn-scene-film video{width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(calc(1.06 - var(--sc,0) * .04)) translate3d(0,0,0)}
+.vn-root .vn-scene-film::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120% 85% at 50% 50%,rgba(8,13,20,.62) 0%,rgba(8,13,20,.86) 70%,var(--canvas) 100%)}
+.vn-root .vn-scene-stage>*:not(.vn-scene-film){position:relative;z-index:2}
+
+@media (max-width:860px),(max-height:700px),(prefers-reduced-motion: reduce){
+  .vn-root .vn-scene-film{display:none}
+}
+
 /* ============ the five static-hero gates (must match app.vn-js exactly) ============ */
 @media (max-width: 720px),
        (orientation: portrait) and (max-width: 1024px),
