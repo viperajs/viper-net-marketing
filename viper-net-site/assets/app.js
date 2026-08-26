@@ -310,8 +310,45 @@
     [].slice.call(document.querySelectorAll('section')).forEach(function (s) { liveIO.observe(s); });
   }
 
+
+  /* ---------- scroll-driven section motion ---------- */
+  /* Every element listed here gets --sp, its own progress through the viewport
+     from 0 to 1, so the section keeps moving with the scroll in both directions
+     instead of playing once and stopping. Only on-screen elements are measured,
+     and each write is delta gated. */
+  var SCRUB = '.case, .svc, .step, .start, .promises li';
+  var scrubEls = [].slice.call(document.querySelectorAll(SCRUB));
+  var scrubVals = scrubEls.map(function () { return -2; });
+  var scrubOn2 = scrubEls.map(function () { return true; });
+  if ('IntersectionObserver' in window) {
+    scrubOn2 = scrubEls.map(function () { return false; });
+    var scrubIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { scrubOn2[scrubEls.indexOf(e.target)] = e.isIntersecting; });
+    }, { rootMargin: '12% 0px' });
+    scrubEls.forEach(function (el) { scrubIO.observe(el); });
+  }
+  var lastPP = -1;
+  function updateScrub() {
+    var h = window.innerHeight;
+    for (var i = 0; i < scrubEls.length; i++) {
+      if (!scrubOn2[i]) continue;
+      var r = scrubEls[i].getBoundingClientRect();
+      var p = clamp((h - r.top) / (h + r.height), 0, 1);
+      if (Math.abs(p - scrubVals[i]) > 0.006) {
+        scrubVals[i] = p;
+        scrubEls[i].style.setProperty('--sp', p.toFixed(3));
+      }
+    }
+    var max = document.documentElement.scrollHeight - h;
+    var pp = max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+    if (Math.abs(pp - lastPP) > 0.004) {
+      lastPP = pp;
+      document.body.style.setProperty('--pp', pp.toFixed(3));
+    }
+  }
   function onPageScroll() {
     drawSpine();
+    updateScrub();
     if (nav) nav.classList.toggle('solid', window.scrollY > 60);
   }
   window.addEventListener('scroll', onPageScroll, { passive: true });
@@ -428,6 +465,7 @@
       el.style.transitionDelay = '0s';
       el.classList.add('in');
     });
+    scrubEls.forEach(function (el) { el.style.setProperty('--sp', '1'); });
   }
   function unpinFinalStates() {
     document.body.classList.remove('pinned');

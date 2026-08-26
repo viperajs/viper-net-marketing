@@ -219,7 +219,7 @@
 .vn-root .vn-services{padding:clamp(6rem,14vh,10rem) clamp(1.2rem,4vw,2.4rem)}
 .vn-root .vn-svc-list{width:var(--shell);margin:clamp(2.4rem,6vh,4rem) auto 0;padding:0;list-style:none;
   border-top:1px solid var(--line)}
-.vn-root .vn-svc{display:grid;grid-template-columns:6rem 1fr;gap:clamp(1rem,3vw,2.5rem);align-items:baseline;
+.vn-root .vn-svc{position:relative;display:grid;grid-template-columns:6rem 1fr;gap:clamp(1rem,3vw,2.5rem);align-items:baseline;
   padding:clamp(1.6rem,3.4vh,2.4rem) 0;border-bottom:1px solid var(--line);position:relative}
 .vn-root .vn-svc::after{content:"";position:absolute;left:0;bottom:-1px;height:1px;width:0;background:var(--accent);
   transition:width .8s var(--ease)}
@@ -242,7 +242,6 @@
   background:var(--panel);aspect-ratio:16/10}
 .vn-root .vn-case-img{position:absolute;inset:0;background-size:cover;background-position:center;
   transform:scale(1.02);transition:transform 1.4s var(--ease)}
-.vn-root .vn-case:hover .vn-case-img{transform:scale(1.07)}
 .vn-root .vn-case-img-1{background-image:url("/work/case-1.jpg"),linear-gradient(135deg,#1D1235,#0C1A16)}
 .vn-root .vn-case-img-2{background-image:url("/work/case-2.jpg"),linear-gradient(135deg,#171034,#231038)}
 .vn-root .vn-case-img-3{background-image:url("/work/case-3.jpg"),linear-gradient(135deg,#0C1A18,#141033)}
@@ -355,6 +354,49 @@
 .vn-root .vn-foot-links{display:flex;gap:1.4rem;list-style:none;margin:0;padding:0;font:500 .9rem var(--mono)}
 .vn-root .vn-foot-links a{text-decoration:none;color:var(--text-secondary);transition:color .4s var(--ease)}
 .vn-root .vn-foot-links a:hover{color:var(--accent)}
+
+
+/* ============ scroll-driven section motion ============ */
+/* Every element below the hero carries --sp, its own progress through the
+   viewport from 0 to 1, written by the scroll drive and delta gated. Reveals
+   still handle the first appearance; these keep moving with the scroll, in
+   both directions, transform and opacity only. */
+
+/* the case art drifts slower than its frame, so the picture has depth */
+.vn-root .vn-case-img{transform:scale(1.09) translate3d(0,calc((var(--sp,.5) - .5) * -30px),0)}
+.vn-root .vn-case:hover .vn-case-img{transform:scale(1.13) translate3d(0,calc((var(--sp,.5) - .5) * -30px),0)}
+.vn-root .vn-case-art{transform:translate3d(0,calc((var(--sp,.5) - .5) * 12px),0)}
+
+/* a hairline runs the width of each service row as it passes */
+.vn-root .vn-svc{--fill:clamp(0,(var(--sp,0) - .18) * 2.6,1)}
+.vn-root .vn-svc::after{content:"";position:absolute;left:0;bottom:-1px;height:1px;
+  width:calc(var(--fill) * 100%);background:linear-gradient(90deg,var(--accent),transparent);
+  opacity:.65;pointer-events:none}
+.vn-root .vn-svc-n{opacity:calc(.45 + .55 * var(--fill));transform:translate3d(0,calc((1 - var(--fill)) * 6px),0)}
+
+/* the process dots light as the reader reaches them, and dim again going back */
+.vn-root .vn-step{--lit:clamp(0,(var(--sp,0) - .34) * 4,1)}
+.vn-root .vn-step .vn-dot{background:color-mix(in srgb,var(--accent) calc(var(--lit) * 100%),var(--canvas));
+  border-color:color-mix(in srgb,var(--accent) calc(var(--lit) * 100%),var(--line-strong));
+  box-shadow:0 0 calc(var(--lit) * 13px) rgba(111,195,255,calc(var(--lit) * .85))}
+.vn-root .vn-step-n{opacity:calc(.5 + .5 * var(--lit))}
+
+/* the ending frame behind the form pushes in slowly as the section arrives */
+.vn-root .vn-start-art{transform:scale(calc(1.04 + var(--sp,0) * .06)) translate3d(0,calc((var(--sp,.5) - .5) * -18px),0)}
+
+/* the promises lift as the section passes, before the hold is even touched */
+.vn-root .vn-promises li{transform:translate3d(0,calc((1 - clamp(0,(var(--sp,0) - .2) * 2.4,1)) * 10px),0)}
+
+/* the one fixed environment layer drifts with the whole page, so scrolling
+   feels like moving through a place rather than past stacked sections */
+.vn-root .vn-env-glow-a{transform:translate3d(0,calc(var(--pp,0) * -70px),0)}
+.vn-root .vn-env-glow-b{transform:translate3d(0,calc(var(--pp,0) * 90px),0)}
+
+@media (prefers-reduced-motion: reduce){
+  .vn-root .vn-case-img,.vn-root .vn-case-art,.vn-root .vn-svc-n,.vn-root .vn-start-art,.vn-root .vn-promises li,.vn-root .vn-env-glow-a,.vn-root .vn-env-glow-b{transform:none!important}
+  .vn-root .vn-svc::after{width:100%}
+  .vn-root .vn-step .vn-dot{background:var(--accent);border-color:var(--accent)}
+}
 
 /* ============ the five static-hero gates (must match app.vn-js exactly) ============ */
 @media (max-width: 720px),
