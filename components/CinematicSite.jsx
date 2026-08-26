@@ -608,9 +608,10 @@ export default function CinematicSite() {
 
   const brand = (
     <>
-      <svg className="vn-brand-mark" viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M16 4l8 12-8 12-8-12z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-        <circle cx="16" cy="16" r="2.6" fill="currentColor" />
+      <svg className="vn-brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M13 9 L32 46 L51 9" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="10" y="21.6" width="44" height="4.6" rx="2.3" fill="currentColor" />
+        <circle cx="32" cy="55" r="3.6" fill="currentColor" />
       </svg>
       <span className="vn-brand-name">Viper Net</span>
     </>
