@@ -80,7 +80,9 @@ const MEASURE = (id) => `(() => {
       await evaluate(c, `(() => {
         const s = document.getElementById('${id}');
         const range = Math.max(0, s.offsetHeight - innerHeight);
-        scrollTo(0, s.getBoundingClientRect().top + scrollY + range * ${f});
+        // the page scrolls smoothly for a reader; a probe must land at once or
+        // it measures a frame the scroll is still travelling through
+        scrollTo({ top: s.getBoundingClientRect().top + scrollY + range * ${f}, behavior: 'instant' });
       })()`);
       await sleep(560);  // longer than the copy's handover fade, so nothing is measured mid transition
       const m = JSON.parse(await evaluate(c, MEASURE(id)));

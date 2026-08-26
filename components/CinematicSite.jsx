@@ -494,6 +494,7 @@ export default function CinematicSite() {
       swap: el.dataset.mode === "swap",
       now: el.querySelector("[data-scene-now]"),
       p: -2,
+      lift: -1e4,
     }));
     // the scene needs room to be scrolled through: one screen to read it, plus
     // a screen of travel per item
@@ -551,8 +552,26 @@ export default function CinematicSite() {
         // view. Without it a scene only starts once it pins to the top, so the
         // reader scrolls through most of an empty screen before anything shows.
         const ENTRY = vh * 0.55;
-        const raw = -s.el.getBoundingClientRect().top + ENTRY;
+        const box = s.el.getBoundingClientRect();
+        const raw = -box.top + ENTRY;
         const p = clamp(raw / (range + ENTRY), 0, 1);
+
+        // Between two scenes the outgoing stage has already scrolled away while
+        // the incoming one is still a screen below its own centre, so the reader
+        // crossed a screen of nothing. Instead the content rides in and out: it
+        // is pulled toward the middle of the screen while the section is still
+        // arriving or already leaving, and dissolves at the edges, so the two
+        // scenes hand over rather than leaving a hole between them.
+        const arriving = clamp(1 - Math.max(0, box.top) / vh, 0, 1);
+        const leaving = clamp(Math.min(box.bottom, vh) / vh, 0, 1);
+        const edge = Math.min(arriving, leaving);
+        const lift = ((1 - arriving) - (1 - leaving)) * vh * -0.5;
+        if (Math.abs(lift - s.lift) > 1.5) {
+          s.lift = lift;
+          s.el.style.setProperty("--enter", lift.toFixed(1) + "px");
+          s.el.style.setProperty("--edge", (edge * edge * (3 - 2 * edge)).toFixed(3));
+        }
+
         if (Math.abs(p - s.p) < 0.004) continue;
         s.p = p;
         s.el.style.setProperty("--sc", p.toFixed(3));

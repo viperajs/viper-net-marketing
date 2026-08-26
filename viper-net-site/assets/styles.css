@@ -458,7 +458,7 @@ section{position:relative;z-index:2}
 /* phones and reduced motion get the sections as plain stacked content: a pinned
    scene on a short screen traps the reader */
 @media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
-  .scene{height:auto!important}
+  .scene{height:auto!important;--enter:0px;--edge:1}
   .scene-stage{position:relative;height:auto;display:block;padding-left:0;padding-right:0}
   .scene [data-step]{opacity:1!important;transform:none!important}
   .scene .svc::after{width:100%}
@@ -496,7 +496,10 @@ section{position:relative;z-index:2}
   transform:scale(calc(1.06 - var(--sc,0) * .04)) translate3d(0,0,0)}
 .scene-film::after{content:"";position:absolute;inset:0;
   background:radial-gradient(120% 85% at 50% 50%,rgba(8,13,20,.62) 0%,rgba(8,13,20,.86) 70%,var(--canvas) 100%)}
-.scene-stage>*:not(.scene-film):not(.scene-count){position:relative;z-index:2}
+/* the ride in and out is scrubbed, so it must not carry the reveal's transition:
+   an eased opacity here lags the scroll and the head arrives after the list */
+.scene-stage>*:not(.scene-film):not(.scene-count){position:relative;z-index:2;
+  opacity:var(--edge,1);transform:translate3d(0,var(--enter,0px),0);transition:none}
 
 @media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
   .scene-film{display:none}

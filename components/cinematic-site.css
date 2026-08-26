@@ -472,7 +472,7 @@
 /* phones and reduced motion get the sections as plain stacked content: a pinned
    scene on a short screen traps the reader */
 @media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
-  .vn-root .vn-scene{height:auto!important}
+  .vn-root .vn-scene{height:auto!important;--enter:0px;--edge:1}
   .vn-root .vn-scene-stage{position:relative;height:auto;display:block;padding-left:0;padding-right:0}
   .vn-root .vn-scene [data-step]{opacity:1!important;transform:none!important}
   .vn-root .vn-scene .vn-svc::after{width:100%}
@@ -510,7 +510,10 @@
   transform:scale(calc(1.06 - var(--sc,0) * .04)) translate3d(0,0,0)}
 .vn-root .vn-scene-film::after{content:"";position:absolute;inset:0;
   background:radial-gradient(120% 85% at 50% 50%,rgba(8,13,20,.62) 0%,rgba(8,13,20,.86) 70%,var(--canvas) 100%)}
-.vn-root .vn-scene-stage>*:not(.vn-scene-film):not(.vn-scene-count){position:relative;z-index:2}
+/* the ride in and out is scrubbed, so it must not carry the reveal's transition:
+   an eased opacity here lags the scroll and the head arrives after the list */
+.vn-root .vn-scene-stage>*:not(.vn-scene-film):not(.vn-scene-count){position:relative;z-index:2;
+  opacity:var(--edge,1);transform:translate3d(0,var(--enter,0px),0);transition:none}
 
 @media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
   .vn-root .vn-scene-film{display:none}
