@@ -397,9 +397,9 @@ section{position:relative;z-index:2}
 .scene .sec-head{margin-bottom:0}
 
 /* items that stack up: each one arrives and stays for the rest of the scene */
-.scene [data-step]{opacity:var(--op,1);will-change:transform,opacity}
+.scene [data-step]{opacity:var(--op,1);will-change:transform,opacity;transition:none}
 .scene .svc{transform:translate3d(calc((1 - var(--k,1)) * -26px),0,0);
-  opacity:calc(var(--op,1) * (.06 + .94 * var(--k,1)))}
+  opacity:calc(var(--op,1) * (.2 + .8 * var(--k,1)))}
 .scene .svc::after{width:calc(var(--k,0) * 100%)}
 .scene .svc-n{opacity:calc(.35 + .65 * var(--k,1));transform:none}
 
@@ -417,18 +417,47 @@ section{position:relative;z-index:2}
   width:var(--shell);margin:0 auto;transform:translateY(-50%);
   opacity:var(--op,0);pointer-events:none}
 .scene-work .case[data-live="1"]{pointer-events:auto}
+/* The art of two cases shares one geometry, so it dissolves cleanly. The copy
+   does not: two paragraphs at the same place read as a printing fault. So the
+   copy belongs to the live case alone and swaps over on its own short fade. */
+.scene-work .case .case-copy{opacity:0;transition:opacity .3s var(--ease)}
+.scene-work .case[data-live="1"] .case-copy{opacity:1}
 .scene-work .case .case-img{transform:scale(calc(1.14 - .09 * var(--k,0))) translate3d(0,0,0)}
 .scene-work .case .case-copy{transform:translate3d(0,calc((1 - var(--k,0)) * 22px),0)}
 .scene-work .cases{position:relative;flex:1;min-height:0}
 
+/* A pinned stage is exactly one screen, so inside a scene the vertical rhythm is
+   measured against that screen instead of in ems. Two different faults come from
+   getting this wrong: the services list overran a laptop screen and the heading
+   was clipped under the nav, and the process rail floated in the middle of a
+   mostly empty stage. So the list tightens and the rail spreads. */
+.scene-stage{gap:0}
+.scene .sec-head{gap:clamp(.55rem,1.4vh,1rem)}
+.scene .sec-head h2{font-size:clamp(1.85rem,min(3.8vw,5.4vh),2.9rem)}
+.scene .svc-list{margin-top:clamp(1.1rem,3.2vh,2.6rem)}
+.scene .svc{padding:clamp(.75rem,2.1vh,2.6rem) 0}
+.scene .svc-body{gap:clamp(.3rem,.9vh,.6rem)}
+.scene .svc h3{font-size:clamp(1.32rem,min(2.9vw,4vh),2.15rem)}
+
+.scene .track{margin-top:clamp(1.8rem,11vh,9rem)}
+.scene .step{padding-top:clamp(2.6rem,6.5vh,4.6rem);gap:clamp(.45rem,1.2vh,.9rem);
+  min-height:clamp(8rem,40vh,28rem)}
+.scene .step h3{font-size:clamp(1.35rem,2.5vw,1.95rem)}
+.scene .step p{font-size:clamp(.98rem,1.1vw,1.1rem)}
+/* the rail drops a line into each column as that step arrives, so the height the
+   scene needs is held by the structure rather than left as a hole */
+.scene .step::before{content:"";position:absolute;left:4px;top:14px;width:1px;
+  height:calc(var(--k,1) * (100% - 22px));
+  background:linear-gradient(180deg,var(--accent) 0%,rgba(111,195,255,0) 100%);opacity:.45}
+
 /* a small readout of where the reader is inside the scene */
-.scene-count{position:absolute;right:clamp(1.2rem,4vw,2.4rem);bottom:clamp(1.4rem,4vh,2.4rem);
+.scene-count{position:absolute;z-index:3;right:clamp(1.2rem,4vw,2.4rem);bottom:clamp(1.4rem,4vh,2.4rem);
   font:500 .7rem var(--mono);letter-spacing:.22em;color:var(--text-secondary);opacity:.75}
 .scene-count b{color:var(--accent);font-weight:500}
 
 /* phones and reduced motion get the sections as plain stacked content: a pinned
    scene on a short screen traps the reader */
-@media (max-width:860px),(max-height:700px),(prefers-reduced-motion: reduce){
+@media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
   .scene{height:auto!important}
   .scene-stage{position:relative;height:auto;display:block;padding-left:0;padding-right:0}
   .scene [data-step]{opacity:1!important;transform:none!important}
@@ -436,8 +465,23 @@ section{position:relative;z-index:2}
   .scene .step .dot{background:var(--accent);border-color:var(--accent)}
   .scene-work .case{position:relative;top:auto;transform:none;opacity:1!important;
     pointer-events:auto;margin:clamp(2.2rem,5vh,3.4rem) auto 0}
+  /* nothing is live here: the cases are simply a list, so every copy shows */
+  .scene-work .case .case-copy{opacity:1!important}
   .scene-work .cases{min-height:0}
   .scene-count{display:none}
+  /* none of the one-screen fitting applies once a scene is a plain stack: the
+     rhythm goes back to the page's own, and the rail's dropped lines go away */
+  .scene .sec-head{gap:1rem}
+  .scene .sec-head h2{font-size:clamp(2rem,4.6vw,3.4rem)}
+  .scene .svc-list{margin-top:clamp(2.4rem,6vh,4rem)}
+  .scene .svc{padding:clamp(1.6rem,3.4vh,2.4rem) 0}
+  .scene .svc h3{font-size:clamp(1.5rem,3vw,2.15rem)}
+  .scene .svc-body{gap:.6rem}
+  .scene .track{margin-top:clamp(2.6rem,6vh,4rem)}
+  .scene .step{padding-top:2.6rem;gap:.45rem;min-height:0}
+  .scene .step h3{font-size:clamp(1.25rem,2.2vw,1.6rem)}
+  .scene .step p{font-size:.98rem}
+  .scene .step::before{display:none}
 }
 
 
@@ -452,9 +496,9 @@ section{position:relative;z-index:2}
   transform:scale(calc(1.06 - var(--sc,0) * .04)) translate3d(0,0,0)}
 .scene-film::after{content:"";position:absolute;inset:0;
   background:radial-gradient(120% 85% at 50% 50%,rgba(8,13,20,.62) 0%,rgba(8,13,20,.86) 70%,var(--canvas) 100%)}
-.scene-stage>*:not(.scene-film){position:relative;z-index:2}
+.scene-stage>*:not(.scene-film):not(.scene-count){position:relative;z-index:2}
 
-@media (max-width:860px),(max-height:700px),(prefers-reduced-motion: reduce){
+@media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
   .scene-film{display:none}
 }
 

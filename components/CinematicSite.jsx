@@ -562,13 +562,16 @@ export default function CinematicSite() {
         // when the scene pins and the last one has a plateau before it releases
         const LEAD = 0.04, TAIL = 0.9;
         const span = (TAIL - LEAD) / n;
-        let live = 0;
-        s.items.forEach((it, i) => {
-          // a swap scene hands over: the outgoing item is nearly gone before the
-          // next arrives, so two compositions never sit on screen together
+        const ks = [], ops = [];
+        for (let i = 0; i < n; i++) {
           const ramp = s.swap ? 0.3 : 0.6;
           const k = clamp((p - (LEAD + i * span)) / (span * ramp), 0, 1);
-          let op = k;
+          // A stack scene keeps every item on screen for the whole scene: they
+          // hold the composition together and only brighten as they arrive.
+          // Fading them in would leave the lower half of the stage blank while
+          // the reader is still at the top of the section. Only a swap scene
+          // hides an item, because there only one may be on screen at a time.
+          let op = 1;
           if (s.swap) {
             // the outgoing item starts leaving just before the next arrives, so
             // the two overlap briefly and the stage is never blank between them.
@@ -577,10 +580,24 @@ export default function CinematicSite() {
             const out = i === n - 1 ? 0 : clamp((p - outAt) / (span * 0.16), 0, 1);
             op = k * (1 - out);
           }
-          if (op > 0.5) live = i;
-          it.style.setProperty("--k", k.toFixed(3));
-          it.style.setProperty("--op", op.toFixed(3));
-          if (s.swap) it.dataset.live = op > 0.5 ? "1" : "0";
+          ks.push(k);
+          ops.push(op);
+        }
+        // Exactly one item is the live one, always: in a swap scene whichever is
+        // most present, in a stack scene the last one that has arrived. The swap
+        // scene's copy is bound to that flag rather than to --op, so two blocks
+        // of text never dissolve through each other at the handover; only the
+        // art, which shares its geometry, actually crossfades.
+        let live = 0;
+        if (s.swap) {
+          for (let i = 1; i < n; i++) if (ops[i] > ops[live]) live = i;
+        } else {
+          for (let i = 0; i < n; i++) if (ks[i] > 0.5) live = i;
+        }
+        s.items.forEach((it, i) => {
+          it.style.setProperty("--k", ks[i].toFixed(3));
+          it.style.setProperty("--op", ops[i].toFixed(3));
+          if (s.swap) it.dataset.live = i === live ? "1" : "0";
         });
         if (s.now) s.now.textContent = String(live + 1).padStart(2, "0");
       }
