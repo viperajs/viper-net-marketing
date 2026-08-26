@@ -414,7 +414,7 @@ export default function CinematicSite() {
     // from 0 to 1, so the section keeps moving with the scroll in both
     // directions instead of playing once and stopping. Only elements actually
     // on screen are measured, and each write is delta gated.
-    const SCRUB = ".vn-case, .vn-svc, .vn-step, .vn-start, .vn-promises li";
+    const SCRUB = ".vn-start, .vn-promises li";
     const scrub = new Map();
     qa(SCRUB).forEach((el) => scrub.set(el, -2));
     const onScreen = new Set();
@@ -447,8 +447,64 @@ export default function CinematicSite() {
         root.style.setProperty("--pp", pp.toFixed(3));
       }
     }
+
+    // ---------- pinned scenes ----------
+    // Each scene is a tall section with a stage stuck to the screen. Scrolling
+    // through the section's height drives the items inside it, the same way the
+    // hero's bands are driven: --k is an item's arrival, --op whether it shows.
+    // "stack" scenes keep each item once it has arrived; "swap" scenes show one
+    // at a time and crossfade.
+    const scenes = qa(".vn-scene").map((el) => ({
+      el,
+      items: [...el.querySelectorAll("[data-step]")],
+      swap: el.dataset.mode === "swap",
+      now: el.querySelector("[data-scene-now]"),
+      p: -2,
+    }));
+    // the scene needs room to be scrolled through: one screen to read it, plus
+    // a screen of travel per item
+    scenes.forEach((s) => {
+      if (!s.items.length) return;
+      s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 62)}vh)`;
+    });
+
+    function updateScenes() {
+      const vh = window.innerHeight;
+      for (const s of scenes) {
+        const range = s.el.offsetHeight - vh;
+        if (range <= 0) continue;
+        const p = clamp(-s.el.getBoundingClientRect().top / range, 0, 1);
+        if (Math.abs(p - s.p) < 0.004) continue;
+        s.p = p;
+        s.el.style.setProperty("--sc", p.toFixed(3));
+        const n = s.items.length;
+        // items arrive between LEAD and TAIL, so the first one is already there
+        // when the scene pins and the last one has a plateau before it releases
+        const LEAD = 0.04, TAIL = 0.9;
+        const span = (TAIL - LEAD) / n;
+        let live = 0;
+        s.items.forEach((it, i) => {
+          // a swap scene hands over: the outgoing item is nearly gone before the
+          // next arrives, so two compositions never sit on screen together
+          const ramp = s.swap ? 0.34 : 0.6;
+          const k = clamp((p - (LEAD + i * span)) / (span * ramp), 0, 1);
+          let op = k;
+          if (s.swap) {
+            const outAt = LEAD + (i + 1) * span - span * 0.3;
+            const out = i === n - 1 ? 0 : clamp((p - outAt) / (span * 0.3), 0, 1);
+            op = k * (1 - out);
+          }
+          if (op > 0.5) live = i;
+          it.style.setProperty("--k", k.toFixed(3));
+          it.style.setProperty("--op", op.toFixed(3));
+          if (s.swap) it.dataset.live = op > 0.5 ? "1" : "0";
+        });
+        if (s.now) s.now.textContent = String(live + 1).padStart(2, "0");
+      }
+    }
     function onPageScroll() {
       drawSpine();
+      updateScenes();
       updateScrub();
       markCurrentSection();
       if (nav) nav.classList.toggle("vn-solid", window.scrollY > 60);
@@ -615,6 +671,13 @@ export default function CinematicSite() {
         pendingReveals.delete(el);
       });
       scrub.forEach((_, el) => el.style.setProperty("--sp", "1"));
+      scenes.forEach((s) => {
+        s.el.style.height = "auto";
+        s.items.forEach((it) => {
+          it.style.setProperty("--k", "1");
+          it.style.setProperty("--op", "1");
+        });
+      });
     }
     function unpinFinalStates() {
       root.classList.remove("vn-pinned");
@@ -767,13 +830,14 @@ export default function CinematicSite() {
         </section>
 
         {/* ================= WHAT WE DO ================= */}
-        <section className="vn-services" id="services" aria-labelledby="services-h">
+        <section className="vn-services vn-scene" id="services" aria-labelledby="services-h" data-scene="4">
+          <div className="vn-scene-stage">
           <header className="vn-sec-head vn-reveal">
             <p className="vn-chip">01 / What we do</p>
             <h2 id="services-h">Four things, done properly.</h2>
           </header>
           <ol className="vn-svc-list">
-            <li className="vn-svc vn-reveal">
+            <li className="vn-svc vn-reveal" data-step>
               <span className="vn-svc-n">01</span>
               <div className="vn-svc-body">
                 <h3>Websites</h3>
@@ -783,21 +847,21 @@ export default function CinematicSite() {
                 </p>
               </div>
             </li>
-            <li className="vn-svc vn-reveal">
+            <li className="vn-svc vn-reveal" data-step>
               <span className="vn-svc-n">02</span>
               <div className="vn-svc-body">
                 <h3>Online stores</h3>
                 <p>Products, payments, delivery. A shop people finish, instead of abandoning at step three.</p>
               </div>
             </li>
-            <li className="vn-svc vn-reveal">
+            <li className="vn-svc vn-reveal" data-step>
               <span className="vn-svc-n">03</span>
               <div className="vn-svc-body">
                 <h3>Getting found</h3>
                 <p>Search built in from the first line, so the people looking for what you sell land on you.</p>
               </div>
             </li>
-            <li className="vn-svc vn-reveal">
+            <li className="vn-svc vn-reveal" data-step>
               <span className="vn-svc-n">04</span>
               <div className="vn-svc-body">
                 <h3>Hosting and support</h3>
@@ -805,16 +869,20 @@ export default function CinematicSite() {
               </div>
             </li>
           </ol>
+          <p className="vn-scene-count" aria-hidden="true"><b data-scene-now>01</b> / 04</p>
+          </div>
         </section>
 
         {/* ================= THE WORK ================= */}
-        <section className="vn-work" id="work" aria-labelledby="work-h">
+        <section className="vn-work vn-scene vn-scene-work" id="work" aria-labelledby="work-h" data-scene="3" data-mode="swap">
+          <div className="vn-scene-stage">
           <header className="vn-sec-head vn-work-head vn-reveal">
             <p className="vn-chip">02 / The work</p>
             <h2 id="work-h">Live sites, real businesses.</h2>
           </header>
+          <div className="vn-cases">
 
-          <article className="vn-case vn-reveal">
+          <article className="vn-case vn-reveal" data-step>
             <div className="vn-case-art" aria-hidden="true">
               <div className="vn-case-img vn-case-img-1" />
               <span className="vn-case-tag">E-commerce</span>
@@ -832,7 +900,7 @@ export default function CinematicSite() {
             </div>
           </article>
 
-          <article className="vn-case vn-case-flip vn-reveal">
+          <article className="vn-case vn-case-flip vn-reveal" data-step>
             <div className="vn-case-art" aria-hidden="true">
               <div className="vn-case-img vn-case-img-2" />
               <span className="vn-case-tag">Fuel station</span>
@@ -850,7 +918,7 @@ export default function CinematicSite() {
             </div>
           </article>
 
-          <article className="vn-case vn-reveal">
+          <article className="vn-case vn-reveal" data-step>
             <div className="vn-case-art" aria-hidden="true">
               <div className="vn-case-img vn-case-img-3" />
               <span className="vn-case-tag">Smart contract audits</span>
@@ -867,10 +935,14 @@ export default function CinematicSite() {
               </a>
             </div>
           </article>
+          </div>
+          <p className="vn-scene-count" aria-hidden="true"><b data-scene-now>01</b> / 03</p>
+          </div>
         </section>
 
         {/* ================= HOW IT GOES ================= */}
-        <section className="vn-process" id="process" aria-labelledby="process-h">
+        <section className="vn-process vn-scene" id="process" aria-labelledby="process-h" data-scene="4">
+          <div className="vn-scene-stage">
           <header className="vn-sec-head vn-reveal">
             <p className="vn-chip">03 / How it goes</p>
             <h2 id="process-h">Plan. Build. Launch.</h2>
@@ -880,31 +952,33 @@ export default function CinematicSite() {
               <span className="vn-track-fill" id="trackFill" />
             </div>
             <ol className="vn-steps">
-              <li className="vn-step vn-reveal">
+              <li className="vn-step vn-reveal" data-step>
                 <span className="vn-dot" aria-hidden="true" />
                 <p className="vn-step-n">Step one</p>
                 <h3>Call</h3>
                 <p>Twenty minutes. What you sell, who buys it, what the site has to do.</p>
               </li>
-              <li className="vn-step vn-reveal">
+              <li className="vn-step vn-reveal" data-step>
                 <span className="vn-dot" aria-hidden="true" />
                 <p className="vn-step-n">Step two</p>
                 <h3>Plan</h3>
                 <p>You see the structure and the price before anyone writes a line of code.</p>
               </li>
-              <li className="vn-step vn-reveal">
+              <li className="vn-step vn-reveal" data-step>
                 <span className="vn-dot" aria-hidden="true" />
                 <p className="vn-step-n">Step three</p>
                 <h3>Build</h3>
                 <p>Design and build, with something real to look at every week.</p>
               </li>
-              <li className="vn-step vn-reveal">
+              <li className="vn-step vn-reveal" data-step>
                 <span className="vn-dot" aria-hidden="true" />
                 <p className="vn-step-n">Step four</p>
                 <h3>Launch</h3>
                 <p>Live, fast, and yours. Every login handed over on day one.</p>
               </li>
             </ol>
+          </div>
+          <p className="vn-scene-count" aria-hidden="true"><b data-scene-now>01</b> / 04</p>
           </div>
         </section>
 

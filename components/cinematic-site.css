@@ -398,6 +398,62 @@
   .vn-root .vn-step .vn-dot{background:var(--accent);border-color:var(--accent)}
 }
 
+
+/* ============ pinned scenes ============ */
+/* A scene is a tall section with a stage stuck to the screen inside it. As the
+   reader scrolls through the section's height the stage stays put and its items
+   assemble, exactly like the hero's caption bands. Each item carries --k, its
+   own arrival from 0 to 1, and --op, whether it is on screen at all. */
+.vn-root .vn-scene{position:relative}
+.vn-root .vn-scene-stage{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;
+  justify-content:center;gap:clamp(1.4rem,4vh,2.6rem);
+  padding:clamp(3.5rem,9vh,6rem) clamp(1.2rem,4vw,2.4rem);overflow:hidden}
+.vn-root .vn-scene .vn-sec-head{margin-bottom:0}
+
+/* items that stack up: each one arrives and stays for the rest of the scene */
+.vn-root .vn-scene [data-step]{opacity:var(--op,1);will-change:transform,opacity}
+.vn-root .vn-scene .vn-svc{transform:translate3d(calc((1 - var(--k,1)) * -26px),0,0);
+  opacity:calc(var(--op,1) * (.06 + .94 * var(--k,1)))}
+.vn-root .vn-scene .vn-svc::after{width:calc(var(--k,0) * 100%)}
+.vn-root .vn-scene .vn-svc-n{opacity:calc(.35 + .65 * var(--k,1));transform:none}
+
+/* the process rail fills with the scene, and each dot lights on its own beat */
+.vn-root .vn-scene .vn-track-fill{width:calc(var(--sc,0) * 100%);transition:none}
+.vn-root .vn-scene .vn-step{opacity:calc(.18 + .82 * var(--k,1));
+  transform:translate3d(0,calc((1 - var(--k,1)) * 18px),0)}
+.vn-root .vn-scene .vn-step .vn-dot{background:color-mix(in srgb,var(--accent) calc(var(--k,0) * 100%),var(--canvas));
+  border-color:color-mix(in srgb,var(--accent) calc(var(--k,0) * 100%),var(--line-strong));
+  box-shadow:0 0 calc(var(--k,0) * 14px) rgba(111,195,255,calc(var(--k,0) * .85))}
+
+/* the work scene shows one client at a time, each crossfading into the next */
+.vn-root .vn-scene-work .vn-case-flip .vn-case-art{order:0}
+.vn-root .vn-scene-work .vn-case{position:absolute;left:0;right:0;top:50%;
+  width:var(--shell);margin:0 auto;transform:translateY(-50%);
+  opacity:var(--op,0);pointer-events:none}
+.vn-root .vn-scene-work .vn-case[data-live="1"]{pointer-events:auto}
+.vn-root .vn-scene-work .vn-case .vn-case-img{transform:scale(calc(1.14 - .09 * var(--k,0))) translate3d(0,0,0)}
+.vn-root .vn-scene-work .vn-case .vn-case-copy{transform:translate3d(0,calc((1 - var(--k,0)) * 22px),0)}
+.vn-root .vn-scene-work .vn-cases{position:relative;flex:1;min-height:0}
+
+/* a small readout of where the reader is inside the scene */
+.vn-root .vn-scene-count{position:absolute;right:clamp(1.2rem,4vw,2.4rem);bottom:clamp(1.4rem,4vh,2.4rem);
+  font:500 .7rem var(--mono);letter-spacing:.22em;color:var(--text-secondary);opacity:.75}
+.vn-root .vn-scene-count b{color:var(--accent);font-weight:500}
+
+/* phones and reduced motion get the sections as plain stacked content: a pinned
+   scene on a short screen traps the reader */
+@media (max-width:860px),(max-height:700px),(prefers-reduced-motion: reduce){
+  .vn-root .vn-scene{height:auto!important}
+  .vn-root .vn-scene-stage{position:relative;height:auto;display:block;padding-left:0;padding-right:0}
+  .vn-root .vn-scene [data-step]{opacity:1!important;transform:none!important}
+  .vn-root .vn-scene .vn-svc::after{width:100%}
+  .vn-root .vn-scene .vn-step .vn-dot{background:var(--accent);border-color:var(--accent)}
+  .vn-root .vn-scene-work .vn-case{position:relative;top:auto;transform:none;opacity:1!important;
+    pointer-events:auto;margin:clamp(2.2rem,5vh,3.4rem) auto 0}
+  .vn-root .vn-scene-work .vn-cases{min-height:0}
+  .vn-root .vn-scene-count{display:none}
+}
+
 /* ============ the five static-hero gates (must match app.vn-js exactly) ============ */
 @media (max-width: 720px),
        (orientation: portrait) and (max-width: 1024px),
