@@ -202,7 +202,7 @@ section{position:relative;z-index:2}
 .link:hover i{width:22px}
 
 /* ============ 01 services: numbered list, no cards ============ */
-.services{padding:clamp(6rem,14vh,10rem) clamp(1.2rem,4vw,2.4rem)}
+.services{padding:clamp(4rem,8vh,6rem) clamp(1.2rem,4vw,2.4rem)}
 .svc-list{width:var(--shell);margin:clamp(2.4rem,6vh,4rem) auto 0;padding:0;list-style:none;
   border-top:1px solid var(--line)}
 .svc{position:relative;display:grid;grid-template-columns:6rem 1fr;gap:clamp(1rem,3vw,2.5rem);align-items:baseline;
@@ -219,7 +219,7 @@ section{position:relative;z-index:2}
 @media (max-width:640px){.svc{grid-template-columns:1fr;gap:.5rem}}
 
 /* ============ 02 work: alternating wide rows ============ */
-.work{padding:clamp(5rem,12vh,8rem) clamp(1.2rem,4vw,2.4rem) clamp(6rem,14vh,10rem)}
+.work{padding:clamp(4rem,8vh,6rem) clamp(1.2rem,4vw,2.4rem)}
 .work-head{align-items:flex-end;text-align:right}
 .case{width:var(--shell);margin:clamp(2.2rem,5vh,3.4rem) auto 0;display:grid;
   grid-template-columns:1.05fr .95fr;gap:clamp(1.4rem,4vw,3.4rem);align-items:center}
@@ -244,7 +244,7 @@ section{position:relative;z-index:2}
 @media (max-width:820px){.case{grid-template-columns:1fr}.case-flip .case-art{order:0}.work-head{align-items:flex-start;text-align:left}}
 
 /* ============ 03 process: horizontal track ============ */
-.process{padding:clamp(5rem,12vh,8rem) clamp(1.2rem,4vw,2.4rem)}
+.process{padding:clamp(4rem,8vh,6rem) clamp(1.2rem,4vw,2.4rem)}
 .track{width:var(--shell);margin:clamp(2.6rem,6vh,4rem) auto 0;position:relative}
 .track-rail{position:absolute;left:0;right:0;top:7px;height:1px;background:var(--line)}
 .track-fill{position:absolute;left:0;top:0;height:100%;width:var(--track,0%);background:var(--accent);
@@ -262,7 +262,7 @@ section{position:relative;z-index:2}
 @media (max-width:520px){.steps{grid-template-columns:1fr}.track-rail{display:none}}
 
 /* ============ 04 the hold ============ */
-.strike{padding:clamp(6rem,14vh,10rem) clamp(1.2rem,4vw,2.4rem);text-align:center}
+.strike{padding:clamp(4rem,8vh,6.5rem) clamp(1.2rem,4vw,2.4rem);text-align:center}
 .strike-inner{width:min(760px,92vw);margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:1rem}
 .strike h2{font-size:clamp(2rem,4.6vw,3.4rem)}
 .strike-lede{color:var(--text-secondary);max-width:34ch}
@@ -287,7 +287,7 @@ section{position:relative;z-index:2}
 .promises.lit li span{background:var(--accent);box-shadow:0 0 10px rgba(111,195,255,.8)}
 
 /* ============ 05 questions ============ */
-.faq{padding:clamp(5rem,12vh,8rem) clamp(1.2rem,4vw,2.4rem)}
+.faq{padding:clamp(4rem,8vh,6rem) clamp(1.2rem,4vw,2.4rem)}
 .faq-list{width:var(--shell);margin:clamp(2.4rem,6vh,3.6rem) auto 0;
   display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(1.6rem,4vw,3.4rem)}
 .qa{border-top:1px solid var(--line)}
@@ -392,7 +392,7 @@ section{position:relative;z-index:2}
    own arrival from 0 to 1, and --op, whether it is on screen at all. */
 .scene{position:relative}
 .scene-stage{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;
-  justify-content:center;gap:clamp(1.4rem,4vh,2.6rem);
+  justify-content:center;gap:clamp(1.4rem,3.4vh,2.4rem);
   padding:clamp(3.5rem,9vh,6rem) clamp(1.2rem,4vw,2.4rem);overflow:hidden}
 .scene .sec-head{margin-bottom:0}
 

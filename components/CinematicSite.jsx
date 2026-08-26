@@ -499,7 +499,7 @@ export default function CinematicSite() {
     // a screen of travel per item
     scenes.forEach((s) => {
       if (!s.items.length) return;
-      s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 62)}vh)`;
+      s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 44)}vh)`;
     });
 
 
@@ -547,7 +547,12 @@ export default function CinematicSite() {
       for (const s of scenes) {
         const range = s.el.offsetHeight - vh;
         if (range <= 0) continue;
-        const p = clamp(-s.el.getBoundingClientRect().top / range, 0, 1);
+        // ENTRY lets the scene begin arriving while it is still rising into
+        // view. Without it a scene only starts once it pins to the top, so the
+        // reader scrolls through most of an empty screen before anything shows.
+        const ENTRY = vh * 0.55;
+        const raw = -s.el.getBoundingClientRect().top + ENTRY;
+        const p = clamp(raw / (range + ENTRY), 0, 1);
         if (Math.abs(p - s.p) < 0.004) continue;
         s.p = p;
         s.el.style.setProperty("--sc", p.toFixed(3));
@@ -561,12 +566,15 @@ export default function CinematicSite() {
         s.items.forEach((it, i) => {
           // a swap scene hands over: the outgoing item is nearly gone before the
           // next arrives, so two compositions never sit on screen together
-          const ramp = s.swap ? 0.34 : 0.6;
+          const ramp = s.swap ? 0.3 : 0.6;
           const k = clamp((p - (LEAD + i * span)) / (span * ramp), 0, 1);
           let op = k;
           if (s.swap) {
-            const outAt = LEAD + (i + 1) * span - span * 0.3;
-            const out = i === n - 1 ? 0 : clamp((p - outAt) / (span * 0.3), 0, 1);
+            // the outgoing item starts leaving just before the next arrives, so
+            // the two overlap briefly and the stage is never blank between them.
+            // They share one composition, so that overlap reads as a dissolve.
+            const outAt = LEAD + (i + 1) * span - span * 0.05;
+            const out = i === n - 1 ? 0 : clamp((p - outAt) / (span * 0.16), 0, 1);
             op = k * (1 - out);
           }
           if (op > 0.5) live = i;
