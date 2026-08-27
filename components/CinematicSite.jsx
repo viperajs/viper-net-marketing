@@ -490,17 +490,28 @@ export default function CinematicSite() {
     const scenes = qa(".vn-scene").map((el) => ({
       el,
       items: [...el.querySelectorAll("[data-step]")],
-      swap: el.dataset.mode === "swap",
+      mode: el.dataset.mode || "stack",
       now: el.querySelector("[data-scene-now]"),
       p: -2,
       lift: -1e4,
     }));
+    // A phone has one screen and no room for a list, so every scene hands over
+    // one item at a time there, the way the work scene already does on a desktop.
+    // The layout is the stylesheet's business; this only says which drive to use.
+    const handheld = matchMedia("(max-width:860px)");
+    const isSwap = (s) => s.mode === "swap" || handheld.matches;
     // the scene needs room to be scrolled through: one screen to read it, plus
     // a screen of travel per item
-    scenes.forEach((s) => {
-      if (!s.items.length) return;
-      s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 44)}vh)`;
-    });
+    function sizeScenes() {
+      // one item at a time needs longer on each, since nothing else is on screen
+      const per = handheld.matches ? 55 : 44;
+      scenes.forEach((s) => {
+        if (!s.items.length) return;
+        s.el.style.height = `calc(100svh + ${Math.round(s.items.length * per)}vh)`;
+      });
+    }
+    sizeScenes();
+    on(handheld, "change", () => { sizeScenes(); scenes.forEach((s) => { s.p = -2; s.lift = -1e4; }); });
 
 
     // A scene's film is fetched only as the reader approaches it, and never on
@@ -546,7 +557,8 @@ export default function CinematicSite() {
     // variables this writes are inline, so they would beat the stylesheet's own
     // reset and drag a section's content up over its heading. This list must
     // stay identical to the unpin media query in the stylesheet.
-    const unpinned = matchMedia("(max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce)");
+    const unpinned = matchMedia(
+      "(min-width:861px) and (max-height:760px),(max-height:560px),(prefers-reduced-motion: reduce)");
     function clearSceneVars() {
       scenes.forEach((s) => {
         s.p = -2;
@@ -599,9 +611,10 @@ export default function CinematicSite() {
         // when the scene pins and the last one has a plateau before it releases
         const LEAD = 0.04, TAIL = 0.9;
         const span = (TAIL - LEAD) / n;
+        const swap = isSwap(s);
         const ks = [], ops = [];
         for (let i = 0; i < n; i++) {
-          const ramp = s.swap ? 0.3 : 0.6;
+          const ramp = swap ? 0.3 : 0.6;
           const k = clamp((p - (LEAD + i * span)) / (span * ramp), 0, 1);
           // A stack scene keeps every item on screen for the whole scene: they
           // hold the composition together and only brighten as they arrive.
@@ -609,7 +622,7 @@ export default function CinematicSite() {
           // the reader is still at the top of the section. Only a swap scene
           // hides an item, because there only one may be on screen at a time.
           let op = 1;
-          if (s.swap) {
+          if (swap) {
             // the outgoing item starts leaving just before the next arrives, so
             // the two overlap briefly and the stage is never blank between them.
             // They share one composition, so that overlap reads as a dissolve.
@@ -626,7 +639,7 @@ export default function CinematicSite() {
         // of text never dissolve through each other at the handover; only the
         // art, which shares its geometry, actually crossfades.
         let live = 0;
-        if (s.swap) {
+        if (swap) {
           for (let i = 1; i < n; i++) if (ops[i] > ops[live]) live = i;
         } else {
           for (let i = 0; i < n; i++) if (ks[i] > 0.5) live = i;
@@ -634,7 +647,7 @@ export default function CinematicSite() {
         s.items.forEach((it, i) => {
           it.style.setProperty("--k", ks[i].toFixed(3));
           it.style.setProperty("--op", ops[i].toFixed(3));
-          if (s.swap) it.dataset.live = i === live ? "1" : "0";
+          if (swap) it.dataset.live = i === live ? "1" : "0";
         });
         if (s.now) s.now.textContent = String(live + 1).padStart(2, "0");
       }

@@ -37,7 +37,8 @@ const STEP = 90;   // px per scroll event, about one thumb frame
     poster: /hero-poster/.test(getComputedStyle(document.getElementById('poster')).backgroundImage),
     stillHero: getComputedStyle(document.getElementById('staticHero')).display !== 'none',
     scenesPin: getComputedStyle(document.querySelector('.vn-scene-stage')).position === 'sticky',
-    caseCopyShown: [...document.querySelectorAll('.vn-case-copy')].every((e) => +getComputedStyle(e).opacity > .9),
+    // pinned: exactly one case is live. stacked: all of them read at once
+    caseCopiesShown: [...document.querySelectorAll('.vn-case-copy')].filter((e) => +getComputedStyle(e).opacity > .5).length,
     overflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
   })`));
 
