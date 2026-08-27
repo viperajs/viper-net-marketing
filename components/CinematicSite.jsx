@@ -447,7 +447,7 @@ export default function CinematicSite() {
     // from 0 to 1, so the section keeps moving with the scroll in both
     // directions instead of playing once and stopping. Only elements actually
     // on screen are measured, and each write is delta gated.
-    const SCRUB = ".vn-start, .vn-promises li, .vn-svc, .vn-step, .vn-case, .vn-scene .vn-sec-head";
+    const SCRUB = ".vn-start, .vn-promises li";
     const scrub = new Map();
     qa(SCRUB).forEach((el) => scrub.set(el, -2));
     const onScreen = new Set();
@@ -495,23 +495,13 @@ export default function CinematicSite() {
       p: -2,
       lift: -1e4,
     }));
-    // A phone has one screen and no room for a list, so every scene hands over
-    // one item at a time there, the way the work scene already does on a desktop.
-    // The layout is the stylesheet's business; this only says which drive to use.
-    const handheld = matchMedia("(max-width:860px)");
-    const isSwap = (s) => s.mode === "swap" || handheld.matches;
+
     // the scene needs room to be scrolled through: one screen to read it, plus
     // a screen of travel per item
-    function sizeScenes() {
-      // one item at a time needs longer on each, since nothing else is on screen
-      const per = handheld.matches ? 55 : 44;
-      scenes.forEach((s) => {
-        if (!s.items.length) return;
-        s.el.style.height = `calc(100svh + ${Math.round(s.items.length * per)}vh)`;
-      });
-    }
-    sizeScenes();
-    on(handheld, "change", () => { sizeScenes(); scenes.forEach((s) => { s.p = -2; s.lift = -1e4; }); });
+    scenes.forEach((s) => {
+      if (!s.items.length) return;
+      s.el.style.height = `calc(100svh + ${Math.round(s.items.length * 44)}vh)`;
+    });
 
 
     // A scene's film is fetched only as the reader approaches it, and never on
@@ -557,8 +547,7 @@ export default function CinematicSite() {
     // variables this writes are inline, so they would beat the stylesheet's own
     // reset and drag a section's content up over its heading. This list must
     // stay identical to the unpin media query in the stylesheet.
-    const unpinned = matchMedia(
-      "(min-width:861px) and (max-height:760px),(max-height:560px),(prefers-reduced-motion: reduce)");
+    const unpinned = matchMedia("(max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce)");
     function clearSceneVars() {
       scenes.forEach((s) => {
         s.p = -2;
@@ -611,7 +600,7 @@ export default function CinematicSite() {
         // when the scene pins and the last one has a plateau before it releases
         const LEAD = 0.04, TAIL = 0.9;
         const span = (TAIL - LEAD) / n;
-        const swap = isSwap(s);
+        const swap = s.mode === "swap";
         const ks = [], ops = [];
         for (let i = 0; i < n; i++) {
           const ramp = swap ? 0.3 : 0.6;
