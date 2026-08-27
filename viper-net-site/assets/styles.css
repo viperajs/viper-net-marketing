@@ -87,7 +87,35 @@ main:focus{outline:none}
   transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
 .nav-links a:hover,.nav-links a.current{color:var(--text-primary)}
 .nav-links a:hover::after,.nav-links a.current::after{transform:scaleX(1)}
-@media (max-width:860px){.nav-links{display:none}.nav .btn-sm{margin-left:auto}}
+/* the phone's menu button: two rules that cross into a close mark */
+.nav-toggle{display:none;position:relative;width:42px;height:42px;flex:none;border-radius:12px;
+  border:1px solid var(--line);background:rgba(8,8,15,.5);color:var(--text-primary);cursor:pointer;
+  padding:0;transition:border-color .4s var(--ease),background .4s var(--ease)}
+.nav-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.nav-toggle::before,.nav-toggle::after{content:"";position:absolute;left:11px;right:11px;top:50%;
+  height:1.5px;margin-top:-.75px;background:currentColor;border-radius:2px;
+  transition:transform .42s var(--ease)}
+.nav-toggle::before{transform:translateY(-4.5px)}
+.nav-toggle::after{transform:translateY(4.5px)}
+.nav[data-menu="open"] .nav-toggle{border-color:var(--accent);color:var(--accent)}
+.nav[data-menu="open"] .nav-toggle::before{transform:rotate(45deg)}
+.nav[data-menu="open"] .nav-toggle::after{transform:rotate(-45deg)}
+
+@media (max-width:860px){
+  .nav-toggle{display:block}
+  .nav .btn-sm{margin-left:auto}
+  /* the same four links, dropped out of the bar as a panel under it */
+  .nav-links{display:grid;gap:0;position:absolute;left:0;right:0;top:100%;margin:0;font-size:1.02rem;
+    background:rgba(8,10,16,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);
+    padding:0 clamp(1.2rem,5vw,2rem) .6rem;
+    opacity:0;visibility:hidden;transform:translateY(-10px);
+    transition:opacity .38s var(--ease),transform .38s var(--ease),visibility .38s}
+  .nav-links a{padding:.95rem .2rem;border-bottom:1px solid var(--line);color:var(--text-primary)}
+  .nav-links a:last-child{border-bottom:0}
+  .nav-links a::after{display:none}
+  .nav-links a.current{color:var(--accent)}
+  .nav[data-menu="open"] .nav-links{opacity:1;visibility:visible;transform:none}
+}
 
 /* ============ buttons ============ */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;

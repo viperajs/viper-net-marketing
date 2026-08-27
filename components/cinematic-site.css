@@ -101,7 +101,35 @@
   transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
 .vn-root .vn-nav-links a:hover,.vn-root .vn-nav-links a.vn-current{color:var(--text-primary)}
 .vn-root .vn-nav-links a:hover::after,.vn-root .vn-nav-links a.vn-current::after{transform:scaleX(1)}
-@media (max-width:860px){.vn-root .vn-nav-links{display:none}.vn-root .vn-nav .vn-btn-sm{margin-left:auto}}
+/* the phone's menu button: two rules that cross into a close mark */
+.vn-root .vn-nav-toggle{display:none;position:relative;width:42px;height:42px;flex:none;border-radius:12px;
+  border:1px solid var(--line);background:rgba(8,8,15,.5);color:var(--text-primary);cursor:pointer;
+  padding:0;transition:border-color .4s var(--ease),background .4s var(--ease)}
+.vn-root .vn-nav-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.vn-root .vn-nav-toggle::before,.vn-root .vn-nav-toggle::after{content:"";position:absolute;left:11px;right:11px;top:50%;
+  height:1.5px;margin-top:-.75px;background:currentColor;border-radius:2px;
+  transition:transform .42s var(--ease)}
+.vn-root .vn-nav-toggle::before{transform:translateY(-4.5px)}
+.vn-root .vn-nav-toggle::after{transform:translateY(4.5px)}
+.vn-root .vn-nav[data-menu="open"] .vn-nav-toggle{border-color:var(--accent);color:var(--accent)}
+.vn-root .vn-nav[data-menu="open"] .vn-nav-toggle::before{transform:rotate(45deg)}
+.vn-root .vn-nav[data-menu="open"] .vn-nav-toggle::after{transform:rotate(-45deg)}
+
+@media (max-width:860px){
+  .vn-root .vn-nav-toggle{display:block}
+  .vn-root .vn-nav .vn-btn-sm{margin-left:auto}
+  /* the same four links, dropped out of the bar as a panel under it */
+  .vn-root .vn-nav-links{display:grid;gap:0;position:absolute;left:0;right:0;top:100%;margin:0;font-size:1.02rem;
+    background:rgba(8,10,16,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);
+    padding:0 clamp(1.2rem,5vw,2rem) .6rem;
+    opacity:0;visibility:hidden;transform:translateY(-10px);
+    transition:opacity .38s var(--ease),transform .38s var(--ease),visibility .38s}
+  .vn-root .vn-nav-links a{padding:.95rem .2rem;border-bottom:1px solid var(--line);color:var(--text-primary)}
+  .vn-root .vn-nav-links a:last-child{border-bottom:0}
+  .vn-root .vn-nav-links a::after{display:none}
+  .vn-root .vn-nav-links a.vn-current{color:var(--accent)}
+  .vn-root .vn-nav[data-menu="open"] .vn-nav-links{opacity:1;visibility:visible;transform:none}
+}
 
 /* ============ buttons ============ */
 .vn-root .vn-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;text-decoration:none;

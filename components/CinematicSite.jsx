@@ -677,6 +677,22 @@ export default function CinematicSite() {
       drawSpine();
     }, { passive: true });
 
+    /* ---------- the phone's menu ---------- */
+    const navToggle = q("#navToggle");
+    if (nav && navToggle) {
+      const setMenu = (open) => {
+        nav.dataset.menu = open ? "open" : "closed";
+        navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        navToggle.setAttribute("aria-label", open ? "Close the menu" : "Open the menu");
+      };
+      setMenu(false);
+      on(navToggle, "click", () => setMenu(nav.dataset.menu !== "open"));
+      // a link closes it, and so does anything else that moves the reader
+      qa(".vn-nav-links a").forEach((a) => on(a, "click", () => setMenu(false)));
+      on(document, "keydown", (e) => { if (e.key === "Escape") setMenu(false); });
+      on(window, "scroll", () => { if (nav.dataset.menu === "open") setMenu(false); }, { passive: true });
+    }
+
     /* ---------- questions ---------- */
     qa(".vn-qa").forEach((item) => {
       const btn = item.querySelector(".vn-q");
@@ -908,7 +924,7 @@ export default function CinematicSite() {
         <a className="vn-brand" href="#top" aria-label="Viper Net, back to top">
           {brand}
         </a>
-        <div className="vn-nav-links">
+        <div className="vn-nav-links" id="navMenu">
           <a href="#services">What we do</a>
           <a href="#work">Work</a>
           <a href="#process">How it goes</a>
@@ -917,6 +933,10 @@ export default function CinematicSite() {
         <a className="vn-btn vn-btn-accent vn-btn-sm" href="#start">
           Start a project
         </a>
+        {/* on a phone the four links live behind this, since there is no room
+            for them in the bar and a site of five sections needs a way through */}
+        <button className="vn-nav-toggle" id="navToggle" type="button" aria-expanded="false"
+          aria-controls="navMenu" aria-label="Open the menu" />
       </nav>
 
       <main id="main" tabIndex={-1}>
