@@ -465,10 +465,33 @@ export default function CinematicSite() {
       observers.push(liveIO);
     }
 
-    // the nav link for the section the reader is actually in, lit with the same
-    // underline the hover state uses. Delta gated: it writes only on a change.
+    // The nav link for the section the reader is actually in. One marker slides
+    // to it rather than four underlines blinking, and the same marker follows a
+    // hover and returns when the pointer leaves. Delta gated on the link, and
+    // the marker is only measured when the link it should sit on changes.
+    const navRow = q(".vn-nav-links");
+    const navInk = q("#navInk");
     const navLinks = qa(".vn-nav-links a").map((a) => ({ a, section: q(a.getAttribute("href")) })).filter((l) => l.section);
     let currentLink = null;
+    let inkAt = null;
+
+    function placeInk(target) {
+      if (!navRow || !navInk) return;
+      // the marker is a horizontal bar: on the phone the links are a stacked
+      // panel and it has nothing to slide along, so it stays out of the way
+      if (!target || getComputedStyle(navRow).display !== "flex") {
+        navRow.dataset.ink = "0";
+        inkAt = null;
+        return;
+      }
+      const row = navRow.getBoundingClientRect();
+      const box = target.getBoundingClientRect();
+      navRow.dataset.ink = "1";
+      navInk.style.width = Math.round(box.width) + "px";
+      navInk.style.transform = `translate3d(${Math.round(box.left - row.left)}px,0,0)`;
+      inkAt = target;
+    }
+
     function markCurrentSection() {
       const line = window.innerHeight * 0.4;
       let found = null;
@@ -480,7 +503,24 @@ export default function CinematicSite() {
       if (currentLink) currentLink.classList.remove("vn-current");
       if (found) found.classList.add("vn-current");
       currentLink = found;
+      if (!navRow || navRow.dataset.hover !== "1") placeInk(found);
     }
+
+    navLinks.forEach(({ a }) => {
+      on(a, "pointerenter", () => {
+        if (navRow) navRow.dataset.hover = "1";
+        placeInk(a);
+      });
+      on(a, "focus", () => placeInk(a));
+    });
+    if (navRow) {
+      on(navRow, "pointerleave", () => {
+        navRow.dataset.hover = "0";
+        placeInk(currentLink);
+      });
+    }
+    // the marker is measured in pixels, so it has to be re-measured on a resize
+    on(window, "resize", () => placeInk(inkAt || currentLink), { passive: true });
 
 
     // ---------- scroll-driven section motion ----------
@@ -935,7 +975,7 @@ export default function CinematicSite() {
         <rect x="10" y="21.6" width="44" height="4.6" rx="2.3" fill="currentColor" />
         <circle cx="32" cy="55" r="3.6" fill="currentColor" />
       </svg>
-      <span className="vn-brand-name">Viper Net</span>
+      <span className="vn-brand-name">Viper<i>Net</i></span>
     </>
   );
 
@@ -967,11 +1007,15 @@ export default function CinematicSite() {
           {brand}
         </a>
         <div className="vn-nav-links" id="navMenu">
+          {/* one marker slides between the links rather than four underlines
+              blinking on and off, so the bar reads as a single instrument */}
+          <span className="vn-nav-ink" id="navInk" aria-hidden="true" />
           <a href="#services">What we do</a>
           <a href="#work">Work</a>
           <a href="#process">How it goes</a>
           <a href="#questions">Questions</a>
         </div>
+        <i className="vn-nav-rule" aria-hidden="true" />
         <a className="vn-btn vn-btn-accent vn-btn-sm" href="#start">
           Start a project
         </a>

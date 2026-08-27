@@ -87,22 +87,51 @@
 @media (max-width:860px){.vn-root{--shell:calc(100vw - 3rem)}}
 
 /* ============ nav ============ */
-.vn-root .vn-nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;gap:1.4rem;
-  padding:.9rem clamp(1rem,4vw,2.4rem);
-  background:linear-gradient(to bottom,rgba(8,5,16,.82),rgba(8,5,16,0));
-  transition:background .5s var(--ease),backdrop-filter .5s var(--ease),border-color .5s var(--ease);
-  border-bottom:1px solid transparent}
-.vn-root .vn-nav.vn-solid{background:rgba(9,6,18,.86);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+/* Over the hero the bar is barely there: a breath of shade so the brand and the
+   button stay readable over the film, and nothing else, because the hero is the
+   thing. The moment the reader leaves it, the bar lifts off the edges into a
+   rail - inset, rounded, glass, with a lit top edge the way a machined part
+   catches light. That lift is the only thing the nav does, and it does it once. */
+.vn-root .vn-nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;
+  gap:clamp(.6rem,1.4vw,1.1rem);padding:.85rem clamp(1rem,4vw,2.4rem);
+  border:1px solid transparent;border-radius:0;
+  background:linear-gradient(to bottom,rgba(8,5,16,.8),rgba(8,5,16,0));
+  transition:top .55s var(--ease),left .55s var(--ease),right .55s var(--ease),
+    padding .55s var(--ease),border-radius .55s var(--ease),border-color .5s var(--ease),
+    background .5s var(--ease),backdrop-filter .5s var(--ease),box-shadow .55s var(--ease)}
+/* the rail is inset far enough to read as an object sitting over the page
+   rather than a bar welded to its edges, and the inset scales with the window
+   so it stays that object on any of them */
+.vn-root .vn-nav.vn-solid{top:clamp(.55rem,1.6vh,1.1rem);left:clamp(.7rem,5vw,7rem);right:clamp(.7rem,5vw,7rem);
+  padding:.6rem .6rem .6rem clamp(.9rem,2vw,1.3rem);border-radius:16px;
+  border-color:rgba(148,178,208,.22);backdrop-filter:blur(18px) saturate(1.3);
+  /* a face lit from above, so the rail has a top and a bottom the way a milled
+     part does, instead of reading as a flat patch of tint */
+  background:linear-gradient(180deg,rgba(23,32,45,.82),rgba(10,14,21,.74));
+  box-shadow:0 22px 54px -28px rgba(0,0,0,.95),inset 0 1px 0 rgba(198,222,244,.16)}
 .vn-root .vn-brand{display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;color:var(--text-primary)}
-.vn-root .vn-brand-mark{width:26px;height:26px;color:var(--accent);transition:transform .6s var(--ease)}
-.vn-root .vn-brand:hover .vn-brand-mark{transform:rotate(90deg)}
-.vn-root .vn-brand-name{font-family:var(--display);font-weight:700;letter-spacing:-.01em;font-size:1.05rem}
-.vn-root .vn-nav-links{display:flex;gap:1.5rem;margin-left:auto;font-size:.9rem}
-.vn-root .vn-nav-links a{position:relative;text-decoration:none;color:var(--text-secondary);transition:color .35s var(--ease)}
-.vn-root .vn-nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-5px;height:1px;background:var(--accent);
-  transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
+.vn-root .vn-brand-mark{width:27px;height:27px;color:var(--accent);transition:transform .6s var(--ease),
+  filter .6s var(--ease);filter:drop-shadow(0 0 10px rgba(111,195,255,.34))}
+.vn-root .vn-brand:hover .vn-brand-mark{transform:rotate(90deg);filter:drop-shadow(0 0 14px rgba(111,195,255,.6))}
+.vn-root .vn-brand-name{font-family:var(--display);font-weight:700;letter-spacing:-.015em;font-size:1.06rem}
+/* the same two-tone wordmark the logo files use, so the bar and the brand agree */
+.vn-root .vn-brand-name i{font-style:normal;color:var(--accent);margin-left:.1em}
+
+.vn-root .vn-nav-links{position:relative;display:flex;align-items:center;gap:.15rem;margin-left:auto;font-size:.875rem}
+.vn-root .vn-nav-links a{position:relative;z-index:1;text-decoration:none;color:var(--text-secondary);
+  padding:.5rem .72rem;border-radius:9px;letter-spacing:.005em;
+  transition:color .35s var(--ease)}
 .vn-root .vn-nav-links a:hover,.vn-root .vn-nav-links a.vn-current{color:var(--text-primary)}
-.vn-root .vn-nav-links a:hover::after,.vn-root .vn-nav-links a.vn-current::after{transform:scaleX(1)}
+/* the marker itself: a lit bar under whichever link is live, moved by app.vn-js */
+.vn-root .vn-nav-ink{position:absolute;left:0;bottom:.18rem;height:1.5px;width:0;border-radius:2px;z-index:0;
+  background:linear-gradient(90deg,rgba(111,195,255,.25),var(--accent),rgba(111,195,255,.25));
+  box-shadow:0 0 10px rgba(111,195,255,.55);opacity:0;
+  transition:transform .5s var(--ease),width .5s var(--ease),opacity .35s var(--ease)}
+.vn-root .vn-nav-links[data-ink="1"] .vn-nav-ink{opacity:1}
+/* a hairline between the reading and the doing */
+.vn-root .vn-nav-rule{width:1px;height:20px;flex:none;background:var(--line-strong);opacity:0;
+  transition:opacity .5s var(--ease)}
+.vn-root .vn-nav.vn-solid .vn-nav-rule{opacity:.6}
 /* the phone's menu button: two rules that cross into a close mark */
 .vn-root .vn-nav-toggle{display:none;position:relative;width:42px;height:42px;flex:none;border-radius:12px;
   border:1px solid var(--line);background:rgba(8,8,15,.5);color:var(--text-primary);cursor:pointer;
@@ -121,12 +150,16 @@
   .vn-root .vn-nav-toggle{display:block}
   .vn-root .vn-nav .vn-btn-sm{margin-left:auto}
   /* the same four links, dropped out of the bar as a panel under it */
-  .vn-root .vn-nav-links{display:grid;gap:0;position:absolute;left:0;right:0;top:100%;margin:0;font-size:1.02rem;
-    background:rgba(8,10,16,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);
-    padding:0 clamp(1.2rem,5vw,2rem) .6rem;
+  .vn-root .vn-nav-links{display:grid;gap:0;position:absolute;left:0;right:0;top:calc(100% + .5rem);margin:0;
+    font-size:1.02rem;background:rgba(10,14,21,.965);backdrop-filter:blur(22px) saturate(1.3);
+    border:1px solid rgba(148,178,208,.16);border-radius:16px;
+    box-shadow:0 24px 54px -30px rgba(0,0,0,.95),inset 0 1px 0 rgba(198,222,244,.12);
+    padding:.3rem clamp(1rem,4vw,1.4rem) .5rem;
     opacity:0;visibility:hidden;transform:translateY(-10px);
     transition:opacity .38s var(--ease),transform .38s var(--ease),visibility .38s}
-  .vn-root .vn-nav-links a{padding:.95rem .2rem;border-bottom:1px solid var(--line);color:var(--text-primary)}
+  .vn-root .vn-nav-ink,.vn-root .vn-nav-rule{display:none}
+  .vn-root .vn-nav-links a{padding:.95rem .2rem;border-radius:0;border-bottom:1px solid var(--line);
+    color:var(--text-primary)}
   .vn-root .vn-nav-links a:last-child{border-bottom:0}
   .vn-root .vn-nav-links a::after{display:none}
   .vn-root .vn-nav-links a.vn-current{color:var(--accent)}
