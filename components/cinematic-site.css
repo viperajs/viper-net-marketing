@@ -125,8 +125,11 @@
 /* ============ hero ============ */
 .vn-root .vn-hero{position:relative;height:560vh;z-index:2}
 .vn-root .vn-stage{position:sticky;top:0;height:100svh;overflow:hidden;background:#07040F}
-.vn-root .vn-poster{position:absolute;inset:0;background-size:cover;background-position:center;
+.vn-root .vn-poster{position:absolute;inset:0;background:url("/hero/hero-poster.jpg") center/cover;
   transition:opacity .9s var(--ease)}
+/* the film's closing frame, held back for the phone's dissolve */
+.vn-root .vn-hero-end{position:absolute;inset:0;background:url("/hero/hero-ending.jpg") center/cover;opacity:0;
+  pointer-events:none}
 .vn-root #vn-hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;
   transform:translateZ(0);will-change:transform;transition:opacity .8s var(--ease)}
 .vn-root .vn-stage.vn-video-ready #vn-hero-video{opacity:1}
@@ -474,13 +477,23 @@
 @media (max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce){
   .vn-root .vn-scene{height:auto!important;--enter:0px;--edge:1}
   .vn-root .vn-scene-stage{position:relative;height:auto;display:block;padding-left:0;padding-right:0}
-  .vn-root .vn-scene [data-step]{opacity:1!important;transform:none!important}
+  /* A pinned scene on a handset triples the page and fights the URL bar, so the
+     phone gets the other half of the same idea: nothing pins, and every item is
+     scrubbed by its own progress across the screen instead. It rises, brightens
+     and settles as it arrives, and does the same in reverse on the way back up,
+     which is what makes the page feel driven rather than merely revealed. */
+  .vn-root .vn-scene [data-step],.vn-root .vn-scene .vn-sec-head{--a:clamp(0,(var(--sp,1) - .08) * 3.2,1);
+    opacity:calc(.12 + .88 * var(--a))!important;
+    transform:translate3d(0,calc((1 - var(--a)) * 26px),0)!important;transition:none!important}
+  .vn-root .vn-scene .vn-svc h3,.vn-root .vn-scene .vn-step h3{transform:translate3d(0,calc((1 - var(--a,1)) * 6px),0)}
   .vn-root .vn-scene .vn-svc::after{width:100%}
   .vn-root .vn-scene .vn-step .vn-dot{background:var(--accent);border-color:var(--accent)}
   .vn-root .vn-scene-work .vn-case{position:relative;top:auto;transform:none;opacity:1!important;
     pointer-events:auto;margin:clamp(2.2rem,5vh,3.4rem) auto 0}
   /* nothing is live here: the cases are simply a list, so every copy shows */
   .vn-root .vn-scene-work .vn-case .vn-case-copy{opacity:1!important}
+  .vn-root .vn-scene-work .vn-case .vn-case-img{transform:scale(calc(1.16 - .12 * var(--a,1)))
+    translate3d(0,calc((var(--sp,.5) - .5) * -26px),0)}
   .vn-root .vn-scene-work .vn-cases{min-height:0}
   .vn-root .vn-scene-count{display:none}
   /* none of the one-screen fitting applies once a scene is a plain stack: the
@@ -496,6 +509,8 @@
   .vn-root .vn-scene .vn-step h3{font-size:clamp(1.25rem,2.2vw,1.6rem)}
   .vn-root .vn-scene .vn-step p{font-size:.98rem}
   .vn-root .vn-scene .vn-step::before{display:none}
+  /* the rail fills on arrival here, not with a scene that never runs */
+  .vn-root .vn-scene .vn-track-fill{width:var(--track,0%);transition:width 1.6s var(--ease)}
 }
 
 
@@ -520,21 +535,59 @@
 }
 
 /* ============ the five static-hero gates (must match app.vn-js exactly) ============ */
+/* These decide who gets no film, not who gets no motion. A phone still pins the
+   hero and still travels through it; it just does it on the two stills the film
+   was cut from, driven by --hp, instead of on 6.6MB of h264 that iOS cannot
+   scrub smoothly anyway. */
 @media (max-width: 720px),
        (orientation: portrait) and (max-width: 1024px),
        (orientation: portrait) and (pointer: coarse),
        (orientation: landscape) and (pointer: coarse) and (max-height: 560px),
        (prefers-reduced-motion: reduce){
-  .vn-root .vn-hero{height:auto}
-  .vn-root .vn-stage{position:relative;height:100svh}
-  .vn-root .vn-bands,.vn-root .vn-ring,.vn-root .vn-cue{display:none}
+  .vn-root .vn-hero{height:230svh}
+  .vn-root .vn-stage{position:sticky;top:0;height:100svh}
+  .vn-root .vn-bands,.vn-root .vn-ring{display:none}
   .vn-root .vn-static-hero{display:flex}
+
+  /* the frame pushes in slowly and dissolves to the closing one. Both stills
+     were framed for a wide screen, so a portrait crop has to be told where to
+     look or it lands on the empty middle of the beam. */
+  .vn-root .vn-poster,.vn-root .vn-hero-end{transform-origin:50% 44%;
+    transform:scale(calc(1.13 - .13 * var(--hp,0))) translate3d(0,calc(var(--hp,0) * -2.5svh),0)}
+  .vn-root .vn-poster{background-position:50% 40%}
+  .vn-root .vn-hero-end{background-position:50% 76%;opacity:clamp(0,(var(--hp,0) - .42) * 2.2,1)}
+  /* and the room darkens as it goes, so the copy keeps its contrast on the
+     brightest frame of the film */
+  .vn-root .vn-scrim{background:radial-gradient(ellipse 130% 95% at 50% 38%,
+    rgba(6,9,14,calc(.06 + .34 * var(--hp,0))) 28%,
+    rgba(6,9,14,calc(.6 + .3 * var(--hp,0))) 100%)}
+  /* and the copy drifts against it, the way the bands do on a big screen */
+  .vn-root .vn-static-hero{transform:translate3d(0,calc(var(--hp,0) * -5svh),0);
+    background:linear-gradient(to top,rgba(7,4,15,calc(.86 + .1 * var(--hp,0))) 6%,
+      rgba(7,4,15,.5) 46%,rgba(7,4,15,.24) 100%)}
+  .vn-root .vn-static-hero h1{transform:translate3d(0,calc(var(--hp,0) * -1.6svh),0)}
+  .vn-root .vn-static-hero .vn-lead{transform:translate3d(0,calc(var(--hp,0) * -3svh),0);
+    opacity:clamp(0,1 - (var(--hp,0) - .74) * 3.4,1)}
+  .vn-root .vn-static-hero .vn-settle-cta{transform:translate3d(0,calc(var(--hp,0) * -4.4svh),0);
+    opacity:clamp(0,1 - (var(--hp,0) - .8) * 3.4,1)}
+  .vn-root .vn-cue{opacity:calc(var(--cue,1) * clamp(0,1 - var(--hp,0) * 8,1))}
+  /* the copy is there the moment the page paints; only its arrival is animated */
+  .vn-root .vn-static-hero>*{animation:vn-stillin .9s var(--ease) both}
+  .vn-root .vn-static-hero h1{animation-delay:.06s}
+  .vn-root .vn-static-hero .vn-lead{animation-delay:.14s}
+  .vn-root .vn-static-hero .vn-settle-cta{animation-delay:.22s}
 }
+@keyframes vn-stillin{from{opacity:0}to{opacity:1}}
 
 /* ============ reduced motion, honoured completely ============ */
 @media (prefers-reduced-motion: reduce){
   .vn-root{scroll-behavior:auto}
   .vn-root *,.vn-root *::before,.vn-root *::after{animation:none!important;transition:none!important;transition-delay:0s!important}
+  .vn-root .vn-hero{height:auto}
+  .vn-root .vn-stage{position:relative;height:100svh}
+  .vn-root .vn-poster,.vn-root .vn-hero-end,.vn-root .vn-static-hero,.vn-root .vn-static-hero>*{transform:none!important;opacity:1}
+  .vn-root .vn-hero-end{display:none}
+  .vn-root .vn-cue{display:none}
   .vn-root .vn-reveal{opacity:1;transform:none}
   .vn-root .vn-promises li{opacity:1;transform:none;color:var(--text-primary);filter:none}
   .vn-root .vn-promises li span{background:var(--accent)}

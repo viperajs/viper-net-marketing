@@ -251,7 +251,6 @@ export default function CinematicSite() {
     function initHeroOnce() {
       if (heroInited) return;
       heroInited = true;
-      poster.style.backgroundImage = `url('${POSTER_URL}')`;
       let started = false;
       const start = () => {
         if (started) return;
@@ -448,7 +447,7 @@ export default function CinematicSite() {
     // from 0 to 1, so the section keeps moving with the scroll in both
     // directions instead of playing once and stopping. Only elements actually
     // on screen are measured, and each write is delta gated.
-    const SCRUB = ".vn-start, .vn-promises li";
+    const SCRUB = ".vn-start, .vn-promises li, .vn-svc, .vn-step, .vn-case, .vn-scene .vn-sec-head";
     const scrub = new Map();
     qa(SCRUB).forEach((el) => scrub.set(el, -2));
     const onScreen = new Set();
@@ -543,7 +542,26 @@ export default function CinematicSite() {
       scenes.forEach((sc) => { if (sc.el.dataset.film) filmIO.observe(sc.el); });
       observers.push(filmIO);
     }
+    // The scenes only pin where the stylesheet pins them. Everywhere else the
+    // variables this writes are inline, so they would beat the stylesheet's own
+    // reset and drag a section's content up over its heading. This list must
+    // stay identical to the unpin media query in the stylesheet.
+    const unpinned = matchMedia("(max-width:860px),(max-height:760px),(prefers-reduced-motion: reduce)");
+    function clearSceneVars() {
+      scenes.forEach((s) => {
+        s.p = -2;
+        s.lift = -1e4;
+        ["--sc", "--enter", "--edge"].forEach((v) => s.el.style.removeProperty(v));
+        s.items.forEach((it) => {
+          it.style.removeProperty("--k");
+          it.style.removeProperty("--op");
+        });
+      });
+    }
+    on(unpinned, "change", (e) => { if (e.matches) clearSceneVars(); });
+
     function updateScenes() {
+      if (unpinned.matches) return;
       const vh = window.innerHeight;
       for (const s of scenes) {
         const range = s.el.offsetHeight - vh;
@@ -621,7 +639,23 @@ export default function CinematicSite() {
         if (s.now) s.now.textContent = String(live + 1).padStart(2, "0");
       }
     }
+    // ---------- the still hero, driven by the same scroll ----------
+    // A phone gets no film: a 6.6MB download and a seek per frame is the wrong
+    // trade on a handset, and iOS cannot scrub reliably anyway. It still gets
+    // the journey, drawn from the two stills the film was cut from. --hp is the
+    // hero's progress; the stylesheet pushes the frame in, dissolves it to the
+    // closing one and drifts the copy against it.
+    let lastHp = -1;
+    function updateStillHero() {
+      if (scrubOn) return;
+      const p = heroProgress();
+      if (Math.abs(p - lastHp) < 0.003) return;
+      lastHp = p;
+      hero.style.setProperty("--hp", p.toFixed(3));
+    }
+
     function onPageScroll() {
+      updateStillHero();
       drawSpine();
       updateScenes();
       updateScrub();
@@ -813,7 +847,9 @@ export default function CinematicSite() {
     /* ---------- pause every loop on a hidden tab ---------- */
     on(document, "visibilitychange", () => root.classList.toggle("vn-paused", document.hidden));
 
+    if (unpinned.matches) clearSceneVars();
     applyHeroMode();
+    updateStillHero();
     drawSpine();
     onPageScroll();
 
@@ -890,6 +926,8 @@ export default function CinematicSite() {
         <section className="vn-hero" id="hero" aria-label="Viper Net introduction">
           <div className="vn-stage" id="stage">
             <div className="vn-poster" id="poster" aria-hidden="true" />
+            {/* the closing frame of the same film, for the phone's dissolve */}
+            <div className="vn-hero-end" aria-hidden="true" />
             <video id="vn-hero-video" preload="none" muted playsInline aria-hidden="true" tabIndex={-1} />
             <div className="vn-scrim" aria-hidden="true" />
 
