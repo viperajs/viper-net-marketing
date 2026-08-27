@@ -36,6 +36,9 @@ const STEP = 90;   // px per scroll event, about one thumb frame
     heroPins: getComputedStyle(document.querySelector('.vn-stage')).position === 'sticky',
     poster: /hero-poster/.test(getComputedStyle(document.getElementById('poster')).backgroundImage),
     stillHero: getComputedStyle(document.getElementById('staticHero')).display !== 'none',
+    // which cut of the film this screen asked for, and whether it is scrubbing
+    filmCut: matchMedia("(max-width: 860px),(orientation: portrait) and (max-width: 1024px)").matches ? 'tall' : 'wide',
+    filmState: document.getElementById('stage').className.replace('vn-stage ', '') || 'loading',
     scenesPin: getComputedStyle(document.querySelector('.vn-scene-stage')).position === 'sticky',
     // pinned: exactly one case is live. stacked: all of them read at once
     caseCopiesShown: [...document.querySelectorAll('.vn-case-copy')].filter((e) => +getComputedStyle(e).opacity > .5).length,

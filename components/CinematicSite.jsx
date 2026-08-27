@@ -3,24 +3,44 @@
 import { useEffect, useRef } from "react";
 import "./cinematic-site.css";
 
-const VIDEO_URL = "/hero/hero-scrub.mp4";
 const POSTER_URL = "/hero/hero-poster.jpg";
-// the real byte size, the loading ring's fallback when Content-Length is missing
-const VIDEO_BYTES = 6957468;
 // the film holds on frame one for this much of the hero scroll, so the headline
 // gets a plateau before the bright pass through the glass begins
 const HOLD = 0.15;
 const filmTime = (p) => clamp((p - HOLD) / (1 - HOLD), 0, 1);
 
-// the five static-hero gates. These must stay identical to the media query list
-// at the bottom of cinematic-site.css, or one side loads what the other hides.
+// The film the hero scrubs, chosen for the screen it will play on. A portrait
+// screen shows a tall window of a wide frame and throws three quarters of it
+// away, so it gets a portrait cut of the same film instead: a fifth of the
+// bytes, and every one of them inside the picture the reader can see. The byte
+// counts are the loading ring's fallback when Content-Length is missing.
+const FILMS = {
+  wide: [{ src: "/hero/hero-scrub.mp4", type: "video/mp4", bytes: 6957468 }],
+  tall: [
+    { src: "/hero/hero-phone.webm", type: 'video/webm; codecs="vp9"', bytes: 1174310 },
+    { src: "/hero/hero-phone.mp4", type: "video/mp4", bytes: 1530008 },
+  ],
+};
+// which cut this screen wants. Matches the phone block in cinematic-site.css.
+const TALL_FILM = "(max-width: 860px),(orientation: portrait) and (max-width: 1024px)";
+
+// The still-hero gates: the screens that get no film at all, because a pinned
+// scrub on them is either impossible or unkind. These must stay identical to
+// the media query list at the bottom of cinematic-site.css, or one side loads
+// what the other hides. A phone is deliberately not here any more: it gets the
+// film, in the cut made for it.
 const GATES = [
-  "(max-width: 720px)",
-  "(orientation: portrait) and (max-width: 1024px)",
-  "(orientation: portrait) and (pointer: coarse)",
   "(orientation: landscape) and (pointer: coarse) and (max-height: 560px)",
+  "(max-height: 480px)",
   "(prefers-reduced-motion: reduce)",
 ];
+
+// A metered connection is not a media query, so it cannot gate the layout. The
+// hero keeps its captions and its scroll; it just plays them over the poster.
+function meteredConnection() {
+  const c = typeof navigator !== "undefined" && navigator.connection;
+  return !!c && (c.saveData === true || /(^|-)2g$/.test(c.effectiveType || ""));
+}
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const smoothstep = (p, e0, e1) => {
@@ -34,8 +54,16 @@ function rng(seed) {
 
 // Split a caption into words and characters so the entrances can move them
 // independently. The untouched sentence stays in the DOM for screen readers.
+//
+// It has to survive being run twice on the same element. React's strict mode
+// mounts an effect, tears it down and mounts it again, and a second pass over
+// an already split caption reads the screen-reader copy and the visible copy
+// as one string and sets the headline twice. So the sentence is taken from the
+// screen-reader copy whenever there is one: that is the original, by
+// construction, whatever the element now contains.
 function split(el, mode, spread, rand) {
-  const text = el.textContent.replace(/\s+/g, " ").trim();
+  const prior = el.querySelector(".vn-sr");
+  const text = (prior ? prior.textContent : el.textContent).replace(/\s+/g, " ").trim();
   el.textContent = "";
   const sr = document.createElement("span");
   sr.className = "vn-sr";
@@ -257,11 +285,15 @@ export default function CinematicSite() {
         started = true;
         loadHeroBlob().catch(failVideo);
       };
-      const img = new Image();
-      img.onload = start;
-      img.onerror = start;
-      img.src = POSTER_URL;
-      setTimeout(start, 4000);
+      if (meteredConnection()) {
+        failVideo();
+      } else {
+        const img = new Image();
+        img.onload = start;
+        img.onerror = start;
+        img.src = POSTER_URL;
+        setTimeout(start, 4000);
+      }
       // band one opens settled: a one-time, time-based assembly that hands over
       // to scroll, on an interval so it cannot stall behind a throttled loop
       const t0 = performance.now();
@@ -272,12 +304,21 @@ export default function CinematicSite() {
       }, 32);
     }
 
+    // the first source this browser can actually decode, from the cut this
+    // screen wants. VP9 is both smaller and cleaner on the portrait cut, so a
+    // browser that decodes it saves a third of the download.
+    function pickFilm() {
+      const cut = matchMedia(TALL_FILM).matches ? FILMS.tall : FILMS.wide;
+      return cut.find((f) => video.canPlayType(f.type)) || cut[cut.length - 1];
+    }
+
     function loadHeroBlob() {
+      const film = pickFilm();
       ctrl = new AbortController();
       let watchdog = setTimeout(() => ctrl.abort(), 20000);
-      return fetch(VIDEO_URL, { signal: ctrl.signal }).then((res) => {
+      return fetch(film.src, { signal: ctrl.signal }).then((res) => {
         if (!res.ok || !res.body) throw new Error("no video");
-        const total = Number(res.headers.get("Content-Length")) || VIDEO_BYTES;
+        const total = Number(res.headers.get("Content-Length")) || film.bytes;
         const reader = res.body.getReader();
         const chunks = [];
         let got = 0;
@@ -300,7 +341,7 @@ export default function CinematicSite() {
         return pump().then(() => {
           clearTimeout(watchdog);
           ring.style.setProperty("--ld", 0);
-          video.src = URL.createObjectURL(new Blob(chunks, { type: "video/mp4" }));
+          video.src = URL.createObjectURL(new Blob(chunks, { type: film.type.split(";")[0] }));
           video.load();
           video.addEventListener(
             "canplay",
@@ -649,7 +690,6 @@ export default function CinematicSite() {
     // closing one and drifts the copy against it.
     let lastHp = -1;
     function updateStillHero() {
-      if (scrubOn) return;
       const p = heroProgress();
       if (Math.abs(p - lastHp) < 0.003) return;
       lastHp = p;

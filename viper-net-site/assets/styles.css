@@ -549,50 +549,53 @@ section{position:relative;z-index:2}
 }
 
 
-/* ============ the five static-hero gates (must match app.js exactly) ============ */
-/* These decide who gets no film, not who gets no motion. A phone still pins the
-   hero and still travels through it; it just does it on the two stills the film
-   was cut from, driven by --hp, instead of on 6.6MB of h264 that iOS cannot
-   scrub smoothly anyway. */
-@media (max-width: 720px),
-       (orientation: portrait) and (max-width: 1024px),
-       (orientation: portrait) and (pointer: coarse),
-       (orientation: landscape) and (pointer: coarse) and (max-height: 560px),
-       (prefers-reduced-motion: reduce){
-  .hero{height:230svh}
-  .stage{position:sticky;top:0;height:100svh}
-  .bands,.ring{display:none}
-  .static-hero{display:flex}
-
-  /* the frame pushes in slowly and dissolves to the closing one. Both stills
-     were framed for a wide screen, so a portrait crop has to be told where to
-     look or it lands on the empty middle of the beam. */
-  .poster,.hero-end{transform-origin:50% 44%;
-    transform:scale(calc(1.13 - .13 * var(--hp,0))) translate3d(0,calc(var(--hp,0) * -2.5svh),0)}
-  .poster{background-position:50% 40%}
-  .hero-end{background-position:50% 76%;opacity:clamp(0,(var(--hp,0) - .42) * 2.2,1)}
-  /* and the room darkens as it goes, so the copy keeps its contrast on the
-     brightest frame of the film */
-  .scrim{background:radial-gradient(ellipse 130% 95% at 50% 38%,
-    rgba(6,9,14,calc(.06 + .34 * var(--hp,0))) 28%,
-    rgba(6,9,14,calc(.6 + .3 * var(--hp,0))) 100%)}
-  /* and the copy drifts against it, the way the bands do on a big screen */
-  .static-hero{transform:translate3d(0,calc(var(--hp,0) * -5svh),0);
-    background:linear-gradient(to top,rgba(7,4,15,calc(.86 + .1 * var(--hp,0))) 6%,
-      rgba(7,4,15,.5) 46%,rgba(7,4,15,.24) 100%)}
-  .static-hero h1{transform:translate3d(0,calc(var(--hp,0) * -1.6svh),0)}
-  .static-hero .lead{transform:translate3d(0,calc(var(--hp,0) * -3svh),0);
-    opacity:clamp(0,1 - (var(--hp,0) - .74) * 3.4,1)}
-  .static-hero .settle-cta{transform:translate3d(0,calc(var(--hp,0) * -4.4svh),0);
-    opacity:clamp(0,1 - (var(--hp,0) - .8) * 3.4,1)}
-  .cue{opacity:calc(var(--cue,1) * clamp(0,1 - var(--hp,0) * 8,1))}
-  /* the copy is there the moment the page paints; only its arrival is animated */
-  .static-hero>*{animation:stillin .9s var(--ease) both}
-  .static-hero h1{animation-delay:.06s}
-  .static-hero .lead{animation-delay:.14s}
-  .static-hero .settle-cta{animation-delay:.22s}
+/* ============ the hero on a portrait screen ============ */
+/* Same hero, same drive, same captions: only the frame and the type change.
+   The film is a portrait cut of the wide one, so it needs no reframing here;
+   the bands do, because a line set to ten characters of a 4.4rem headline is
+   a different object at 390px than at 1440px, and because the scrims that
+   anchor to one side of a wide frame miss entirely on a narrow one. */
+@media (max-width: 860px),(orientation: portrait) and (max-width: 1024px){
+  .hero{height:340svh}
+  .band{padding:0 clamp(1.4rem,6vw,2.4rem)}
+  .band h1{font-size:clamp(2.4rem,11vw,3.6rem);max-width:11ch}
+  .band h2{font-size:clamp(2.1rem,9.6vw,3.2rem);max-width:12ch}
+  .band .lead{font-size:clamp(1.55rem,7.4vw,2.6rem);max-width:12ch}
+  /* right-aligned text is cramped at this width, so every band reads from the
+     same edge and the rhythm comes from the film instead */
+  .band-2{align-items:flex-start;text-align:left}
+  .band-2 .lead{margin-left:0}
+  .band-4{padding-top:13svh}
+  .settle-sub{font-size:1rem;max-width:32ch;margin-top:1.1rem}
+  .settle-cta{margin-top:1.6rem}
+  /* the full width of the frame, top weighted, since the copy sits low */
+  .band-1::before,.band-2::before,.band-3::before{background:linear-gradient(to bottom,
+    rgba(5,5,10,.28) 0%,rgba(5,5,10,.58) 34%,rgba(5,5,10,.74) 66%,rgba(5,5,10,.42) 100%)}
+  .band-4::before{background:linear-gradient(to bottom,
+    rgba(5,5,10,.74) 0%,rgba(5,5,10,.56) 52%,rgba(5,5,10,.3) 100%)}
 }
-@keyframes stillin{from{opacity:0}to{opacity:1}}
+
+/* ============ the still-hero gates (must match app.js exactly) ============ */
+/* What is left here is the screens a scrubbed hero cannot serve: a handset held
+   sideways with no room for it, anything shorter than a keyboard, and a reader
+   who has asked for no motion. A phone is not one of them. */
+@media (orientation: landscape) and (pointer: coarse) and (max-height: 560px),
+       (max-height: 480px),
+       (prefers-reduced-motion: reduce){
+  .hero{height:auto}
+  .stage{position:relative;height:100svh}
+  .bands,.ring,.cue{display:none}
+  .static-hero{display:flex}
+}
+
+/* Wherever the film could not be loaded - it failed, or the connection is
+   metered - the poster carries the same journey on its own: it pushes in and
+   dissolves to the closing frame, driven by the hero's own progress. */
+.stage.video-failed .poster,.stage.video-failed .hero-end{transform-origin:50% 44%;
+  transform:scale(calc(1.12 - .12 * var(--hp,0))) translate3d(0,calc(var(--hp,0) * -2.5svh),0)}
+.stage.video-failed .poster{background-position:50% 40%}
+.stage.video-failed .hero-end{background-position:50% 76%;
+  opacity:clamp(0,(var(--hp,0) - .42) * 2.2,1)}
 
 /* ============ reduced motion, honoured completely ============ */
 @media (prefers-reduced-motion: reduce){
